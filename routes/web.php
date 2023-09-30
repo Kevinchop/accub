@@ -1,10 +1,10 @@
 <?php
 
+use App\Http\Controllers\DashController;
 use App\Http\Controllers\IndexController;
 use App\Models\ast_actividad;
 use App\Models\ast_sprint;
 use Illuminate\Support\Facades\Route;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -28,6 +28,8 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
+    Route::get('/dashboard', [DashController::class, 'index'])->name('dashboard');
+    /*
     Route::get('/dashboard', function () {
         //Obtenemos los Sprint de la base de datos
         $actividades = ast_actividad::all();
@@ -44,7 +46,7 @@ Route::middleware([
 
         //si uno de los parametros es un vector, en vez de var_name, va var_names
         return view('dashboard', compact('actividades', 'heads'));
-    })->name('dashboard');
+    })->name('dashboard');*/
 
     Route::get('/bdconocimientos', function(){
         return view('bdconocimiento');

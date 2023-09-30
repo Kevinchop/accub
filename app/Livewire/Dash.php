@@ -13,7 +13,7 @@ class Dash extends Component
         'fecha' => 'required',
         'idTarea' => 'required',
         'nombre' => 'required',
-        'cantHs' => 'numeric | required',
+        'cantHs' => 'required',
         'concepto' => 'required'
     ];
 
@@ -36,15 +36,14 @@ class Dash extends Component
 
     public function guardar()
     {
-        dd('asdasd');
         $this->validate();
 
         $actividad = new ast_actividad();
 
         $actividad->fecha = $this->fecha;
-        $actividad->idTarea = $this->idTarea;
+        $actividad->id_tarea = $this->idTarea;
         $actividad->nombre = $this->nombre;
-        $actividad->cantHs = $this->cantHs;
+        $actividad->horas = $this->cantHs;
         $actividad->concepto = $this->concepto;
 
         $actividad->save();

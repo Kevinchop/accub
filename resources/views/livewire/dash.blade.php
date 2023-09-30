@@ -10,8 +10,8 @@
                     @enderror                 
                 </div>
                 <div class="col-md-2">
-                    <input type="number" wire:model="id_tarea" class="form-control" id="id_tarea" placeholder="N°">
-                    @error('id_tarea')
+                    <input type="number" wire:model="idTarea" class="form-control" id="id_tarea" placeholder="N°">
+                    @error('idTarea')
                         <small class="text-danger">{{ $message }}</small>
                     @enderror
                 </div>
@@ -24,7 +24,10 @@
                     @enderror
                 </div>
                 <div class="col-md-1">
-                    <input type="number" wire:model="horas" class="form-control" id="horas" placeholder="Hs">
+                    <input type="number" wire:model="cantHs" class="form-control" id="horas" placeholder="Hs">
+                    @error('cantHs')
+                        <small class="text-danger">{{ $message }}</small>
+                    @enderror
                 </div>
 
                 <div class="col-md-2">
@@ -32,6 +35,9 @@
                         <option value="Hs_Presenciales">Hs Calendario</option>
                         <option value="Hs_Trabajo Remoto">Hs Trabajo Remoto</option>
                     </select>
+                    @error('concepto')
+                        <small class="text-danger">{{ $message }}</small>
+                    @enderror
                 </div>
             </div>
             <div class="form-row">

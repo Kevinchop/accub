@@ -1,0 +1,4 @@
+Tabla Lenguajes
+
+id
+nombre

@@ -1,0 +1,4 @@
+Tabla Categorias
+
+id
+nombre

@@ -65,6 +65,6 @@ Route::middleware([
 // Habia una ruta acá que me llevaba a un Home que no existia cuando daba Login desde afuera (por WAN)
 // Auth::routes();
 
-Route::get('/home', function() {
-    return view('dashboard');
-})->name('dashboard')->middleware('auth');
+// Route::get('/home', function() {
+//     return view('dashboard');
+// })->name('dashboard')->middleware('auth');

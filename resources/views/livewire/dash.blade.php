@@ -1,5 +1,4 @@
-{{-- Solo banca un Section por llamada Livewire --}}
-<section id="cargador_actividades">
+<div>
     <div class="card">
         <div class="card-body">
             <div class="form-row">
@@ -58,15 +57,15 @@
             </div>
         </div>
     </div>
-
-    {{-- Esta es la parte de abajo donde está el listado de actividades --}}
+	
+{{-- Esta es la parte de abajo donde está el listado de actividades --}}
     <div class="card">
-        <div class="card-header bg-secondary mr-0">
-            <nav class="navbar">
-                <form class="form-inline ml-auto">
-                    <input class="form-control ml-auto" id="consulta_actividad" wire:model="consulta" type="search" placeholder="Buscar actividad">
-                </form>
-            </nav>
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-4 ml-auto">
+                    <input class="form-control" type="text" wire:model.live='consulta' placeholder="Buscar actividad">
+                </div>
+            </div>
         </div>
         <div class="card-body">
             @foreach ($actividades as $actividad)
@@ -141,4 +140,4 @@
             @endforeach
         </div>
     </div>
-</section>
+</div>

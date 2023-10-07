@@ -1,5 +1,6 @@
 <?php
 /* Este controlador Dash de Livewire lo voy a usar de ejemplo para replicarlo en otros sistemas */
+
 namespace App\Livewire;
 
 use Livewire\Component;
@@ -30,7 +31,8 @@ class Dash extends Component
     public $cantHs_up;
     public $concepto_up;
 
-    public $consulta; //variable que trae los datos del input de busqueda
+    public $consulta;
+ 
 
     public function mount()
     {
@@ -38,18 +40,12 @@ class Dash extends Component
         hasta que se recargue. */
     }
 
-    // public function getActividades()
-    // {
-    //     $loquesebusca = '%' . $this->consulta . '%';
-    //     return ast_actividad::where('nombre', 'like', $loquesebusca)->get();
-    // }
-
     public function render()
     {
         /* En render van todos los elementos que quedan como en un estado de conexion continua con la vista. Es dinamico y 
         sirve al sistema como nexo de AJAX entre las funciones */
-        
-        $this->actividades = ast_actividad::all();
+        $this->actividades = ast_actividad::where('nombre', 'like', '%'. $this->consulta . '%')->orderBy('id', 'desc')->get();
+        // $this->actividades = ast_actividad::all();
         return view('livewire.dash');
     }
 
@@ -71,7 +67,8 @@ class Dash extends Component
     }
 
     //Cuando se cancela la edicion de un formulario, se llama a esta funcion
-    public function editClose(){
+    public function editClose()
+    {
         $this->editing_id = null;
     }
 

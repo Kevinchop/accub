@@ -29,24 +29,6 @@ Route::middleware([
     'verified',
 ])->group(function () {
     Route::get('/dashboard', [DashController::class, 'index'])->name('dashboard');
-    /*
-    Route::get('/dashboard', function () {
-        //Obtenemos los Sprint de la base de datos
-        $actividades = ast_actividad::all();
-
-        //AST 102170 - CAPACITACIÓN-TALLER TRAINING SOFT SKILLS
-        //Asignamos las cabeceras del DataTable
-        $heads = [
-            'Fecha',
-            'ID',
-            'Actividad',
-            'Cant. Hs',
-            'Concepto'
-        ];
-
-        //si uno de los parametros es un vector, en vez de var_name, va var_names
-        return view('dashboard', compact('actividades', 'heads'));
-    })->name('dashboard');*/
 
     Route::get('/bdconocimientos', function(){
         return view('bdconocimiento');

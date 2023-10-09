@@ -75,7 +75,7 @@
                     @if ($editing_id == $actividad->id)
                     <input type="date" wire:model="fecha_up" class="form-control">
                     @else
-                    <span class="form-control bg-secondary text-white text-center" title="Fecha de actividad">
+                    <span class="form-control bg-gradient-orange text-center" title="Fecha de actividad">
                         {{$actividad->fecha}}
                     </span>
                     @endif

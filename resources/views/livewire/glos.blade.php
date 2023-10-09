@@ -3,7 +3,7 @@
     <div class="row">
         <div class="col-md-4">
             <div class="card">
-                <div class="card-header bg-gray">
+                <div class="card-header bg-gradient-teal">
                     <ul class="nav nav-tabs card-header-tabs">
                         <li class="nav-item">
                             <div class="nav-link active">({{$cantLang}}) Lenguajes</div>
@@ -18,7 +18,7 @@
                 <div class="card-body">
                     <div class="form-group">
                         <label for="nombre_lenguaje">Nombre</label>
-                        <input class="form-control" name="nombre_lenguaje" wire:model="nombre_lenguaje" type="text"
+                        <input class="form-control" name="nombre_lenguaje" wire:model.live="nombre_lenguaje" type="text"
                             placeholder="Ej.: PHP">
                         @error('nombre_lenguaje')
                         {{-- cuando no es un componente x-adminlte, hay que ponerle el
@@ -31,8 +31,9 @@
                         <textarea class="form-control" name="descripcion_lenguaje" wire:model="descripcion_lenguaje"
                             rows="3" placeholder="en caso de tenerla..."></textarea>
                     </div>
-                    <div class="form-group text-right mb-0">
-                        <button class="btn btn-success ml-auto" name="agregarLenguaje"
+                    <div class="form-group d-flex mb-0">
+                        <span class="text-muted pt-2">{{$info}}</span>
+                        <button class="btn btn-secondary ml-auto" name="agregarLenguaje"
                             wire:click="agregarLenguaje">Agregar</button>
                     </div>
                 </div>
@@ -41,7 +42,7 @@
 
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header bg-info">
+                <div class="card-header bg-gradient-info">
                     <ul class="nav nav-tabs card-header-tabs">
                         <li class="nav-item">
                             <div class="nav-link active">({{$cantDefi}}) Definiciones</div>
@@ -70,7 +71,7 @@
                             rows="3" placeholder="Explicacion de la definicion..."></textarea>
                     </div>
                     <div class="form-group text-right mb-0">
-                        <button class="btn btn-success ml-auto" name="agregarDefinicion"
+                        <button class="btn btn-secondary ml-auto" name="agregarDefinicion"
                             wire:click="agregarDefinicion">Agregar</button>
                     </div>
                 </div>
@@ -79,7 +80,7 @@
     </div>
 
     <div class="card">
-        <div class="card-header bg-gray">
+        <div class="card-header bg-gradient-dark">
             <div class="row">
                 <div class="col-md-2 my-1 ml-auto">
                     <select name="tabla" wire:model.live='tabla' class="form-control">

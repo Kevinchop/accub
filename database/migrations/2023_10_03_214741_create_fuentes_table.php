@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('nombre', 40);
             $table->bigInteger('lenguaje_id');
             $table->bigInteger('categoria_id')->nullable();
+            $table->string('etiqueta', 150);
             $table->string('desarrollo', 6000);
             $table->timestamps();
             $table->softDeletes();

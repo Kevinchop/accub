@@ -1,0 +1,138 @@
+#include "definic.sqr"
+
+#define ANCHO_PAG       230
+#define LARGO_PAG       80
+
+Begin-Setup
+use {BDATOS}
+Declare-Printer DEFAULT-LP
+INIT-STRING={COD_IMP_COND}
+End-Declare
+Declare-Layout DEFAULT
+TOP-MARGIN=0
+LEFT-MARGIN=0
+MAX-LINES={LARGO_PAG}
+MAX-COLUMNS={ANCHO_PAG}
+End-Declare
+end-Setup
+
+#include "log.sqr"
+#include "jubila.sqr"
+#include "validar.sqr"
+! ========================================================================
+Begin-Program
+
+do Inicializar_Programa
+do Fecha
+
+let $w_sqr = 'ju_relac_ben.sqr'
+let $w_sp  = 'sp_ju_gen_relac_tarj_benef'
+
+do Log_Inicio_Ejecucion
+do Main
+do Log_Fin_Ejecucion
+do Finalizar_Programa
+
+End-Program
+! ========================================================================
+! ASIGNACION DE MES Y ANIO A VARIABLES DE TRABAJO DESDE FECHA PARAMETRO !
+Begin-Procedure Fecha
+
+Begin-Select -c1
+convert(varchar(30),getdate(),109) &w_today
+End-Select
+
+execute on-error  = Error_SP cob_jubi..sp_busqueda_basica
+@i_fecha          = &w_today,
+@o_fecha_proc     = $o_fecha_acred out
+
+Begin-Select -c1
+convert(varchar(30),$o_fecha_acred,109)   &w_fecha_proc
+convert(varchar(10),$o_fecha_acred,103)   &w_fecha_lis
+End-Select
+
+End-Procedure !Fecha
+! ========================================================================
+Begin-Procedure Log_Inicio_Ejecucion
+
+Begin-Sql -C1 on-error = Error_SQL
+delete cob_jubi..ju_d_log_errores
+where le_d_programa = $w_sqr
+and   le_d_proceso  = $w_sp
+End-Sql
+
+Begin-Select
+convert(varchar(10),getdate(),103) + ' ' + convert(varchar,getdate(),108) &fecha_hora_inicio
+end-select
+
+let $w_observa = '||INICIO EJECUCION PROCESO RELACION TARJETA/BENEFICIO -> ' || &fecha_hora_inicio
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+End-Procedure !Log_Inicio_Ejecucion
+! ========================================================================
+Begin-Procedure Log_Fin_Ejecucion
+
+Begin-Select
+convert(varchar(10),getdate(),103) + ' ' + convert(varchar,getdate(),108) &fecha_hora_fin_ejecucion
+end-select
+
+let $w_observa = '||FIN EJECUCION PROCESO RELACION TARJETA/BENEFICIO -> ' || &fecha_hora_fin_ejecucion
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+End-Procedure !Log_Fin_Ejecucion
+! ========================================================================
+Begin-Procedure Main
+
+do Proceso
+
+End-Procedure !Main
+! ========================================================================
+Begin-Procedure Proceso
+
+execute on-error  = Error_SP cob_jubi..sp_ju_gen_relac_tarj_benef
+@s_user           = '{USERBATCH}',
+@s_date           = &w_fecha_proc
+
+End-Procedure !Proceso
+! ========================================================================
+Begin-Procedure Error_SP
+
+show '--------------------------------------------------------'
+show 'ERROR AL EJECUTAR EL SP'
+show '--------------------------------------------------------'
+show $sql-error
+show '--------------------------------------------------------'
+
+do Log_Fin_Ejecucion
+let $mensaje_error = $w_mensaje_error
+stop quiet
+
+End-Procedure !Error_SP
+! ========================================================================
+Begin-Procedure Error_SQL
+
+show '--------------------------------------------------------'
+show 'ERROR AL EJECUTAR SENTENCIA SQL'
+show '--------------------------------------------------------'
+show $sql-error
+show '--------------------------------------------------------'
+
+do Log_Fin_Ejecucion
+let $mensaje_error = $w_mensaje_error
+stop quiet
+
+End-Procedure !Error_SQL

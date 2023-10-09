@@ -1,0 +1,1436 @@
+#include "definic.sqr"
+
+#DEFINE FOR_DIN    99,999,999.99 !FORMATO DE DINERO PARA REPORTE
+
+Begin-Setup
+use {BDATOS}
+Declare-Printer DEFAULT-LP
+INIT-STRING={COD_IMP_COND}
+End-Declare
+Declare-Layout DEFAULT
+TOP-MARGIN=0
+LEFT-MARGIN=0
+MAX-LINES={LARGO_PAG}
+MAX-COLUMNS={ANCHO_PAG}
+End-Declare
+End-Setup
+
+#include "log.sqr"
+#include "jubila.sqr"
+#include "validar.sqr"
+! ========================================================================
+Begin-Program
+
+do Inicializar_Programa
+
+do Fecha
+
+let $w_sqr = 'ju_gentot_cpp.sqr'
+let $w_sp  = 'ju_gentot_cpp.sqr'
+
+do LeerLogin
+do Log_Inicio_Ejecucion
+do Main
+do Log_Fin_Ejecucion
+do Finalizar_Programa
+
+End-Program
+! ========================================================================
+! ASIGNACION DE MES Y ANIO A VARIABLES DE TRABAJO DESDE FECHA PARAMETRO !
+Begin-Procedure Fecha
+
+Begin-Select -c1
+convert(varchar(30),getdate(),109) &w_today
+End-Select
+
+execute on-error  = Error_SP cob_jubi..sp_busqueda_basica
+@i_fecha          = &w_today,
+@o_fecha_proc     = $o_fecha_acred out
+
+Begin-Select -c1
+convert(varchar(30),$o_fecha_acred,109)   &w_fecha_proc
+convert(varchar(10),$o_fecha_acred,103)   &w_fecha_lis
+End-Select
+
+End-Procedure !Fecha
+! ========================================================================
+Begin-Procedure Log_Inicio_Ejecucion
+
+Begin-Sql -C1 on-error = Error_SQL
+delete cob_jubi..ju_d_log_errores
+where le_d_programa = $w_sqr
+End-Sql
+
+Begin-Select
+convert(varchar(10),getdate(),103) + ' ' + convert(varchar,getdate(),108) &fecha_hora_inicio
+end-select
+
+let $w_observa = '||INICIO EJECUCION PROCESO GENTOT CPP -> ' || &fecha_hora_inicio
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+End-Procedure !Log_Inicio_Ejecucion
+! ========================================================================
+Begin-Procedure Log_Fin_Ejecucion
+
+Begin-Select
+convert(varchar(10),getdate(),103) + ' ' + convert(varchar,getdate(),108) &fecha_hora_fin_ejecucion
+end-select
+
+let $w_observa = '||FIN EJECUCION PROCESO GENTOT CPP -> ' || &fecha_hora_fin_ejecucion
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+End-Procedure !Log_Fin_Ejecucion
+! ========================================================================
+Begin-Heading 8
+End-Heading
+! ========================================================================
+Begin-Procedure Main
+
+do Inicializar_Seqnos
+do Proceso
+
+End-Procedure !Main
+! ========================================================================
+Begin-Procedure Inicializar_Seqnos
+
+!-- PONEMOS EN 1 EL CONTADOR DE LA TABLA cobis..cl_seqnos
+Begin-Sql on-error = Error_SQL
+update cobis..cl_seqnos set
+siguiente    = 0
+where tabla  = 'ju_comprob_benef_impr'
+and   bdatos = 'cob_jubi'
+End-Sql
+
+let $w_sp      = 'ju_gentot_cpp.sqr'
+let $w_observa = 'SE INICIALIZO LA TABLA cobis..cl_seqnos PARA EL VALOR ju_comprob_benef_impr'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+End-Procedure Inicializar_Seqnos
+! ========================================================================
+Begin-Procedure Proceso
+
+execute on-error = Error_SP cobis..sp_cseqnos
+@i_tabla = 'ju_comprob_benef_impr',
+@o_siguiente = #w_siguiente out
+
+let $w_sp      = 'sp_ju_exec_vistas'
+let $w_observa = 'SE ELIMINAN TABAS Y VISTAS Y SE GENERAN TABLAS DE ENTES Y VISTAS DE TRABAJO -> OPERACION = B'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+! -- ELIMINAMOS LAS TABLAS Y VISTAS / CREAMOS TABLA DE ENTES / CREAMOS VISTAS DE TRABAJO
+execute on-error     = Error_SP cob_jubi..sp_ju_exec_vistas
+@i_c_operacion       = 'B'
+
+let $w_sp      = 'ju_gentot_cpp.sqr'
+let $w_observa = 'EJECUCION DEL shell script -> ju_gentot_bcp.sh = 0'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+let $nombre_script = 'sh ../scripts/ju_gentot_bcp.sh ' || '0 ' || $w_usuario || ' ' || $w_password || ' > ../listados/bcp_out0.log'
+call system using $nombre_script #retorno
+
+!ELIMINAR ARCHIVO ../listados/bcp_out0.log
+let $w_comando = 'rm ../listados/bcp_out0.log'
+call system using $w_comando #retorno
+
+do Ejecutar_BCP('tempdb..ju_gentot_vista1','../listados/ju_cpp_tot_vw_out.txt','in','../listados/ju_cpp_tot_vw_in.log','S')
+do Ejecutar_BCP('tempdb..ju_gentot_vista1','../listados/ju_cpp_tot_h_vw_out.txt','in','../listados/ju_cpp_tot_vw_in.log','N')
+
+execute on-error = Error_SP cob_jubi..sp_ju_cpp_vista
+@i_c_operacion   = 'I'
+
+do Ejecutar_BCP('tempdb..ju_gentot_vista1','../listados/ju_cpp_tot_vw_out.txt','out','../listados/ju_cpp_tot_vw_out.log','S')
+
+do Actualizar_Seqnos
+do Armar_Archivo_In
+
+let $w_sp      = 'ju_gentot_cpp.sqr'
+let $w_observa = 'BCP IN A LA TABLA tempdb..ju_gentot_vista'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+! -- BCP IN DE LOS RESULTANTES A tempdb..ju_gentot_vista
+do Ejecutar_BCP('tempdb..ju_gentot_vista','../listados/salida.txt','in','../listados/ju_cpp_tot_vw_in.log','S')
+
+let $w_sp      = 'sp_ju_exec_vistas'
+let $w_observa = 'SE ELIMINAN LOS DUPLICADOS, SE CREAN INDICES Y IDENTITY Y SE CREAN VISTAS FINALES -> OPERACION = G'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+! -- ELIMINAMOS LOS DUPLICADOS / CREAMOS INDICES Y IDENTITY / CREAMOS VISTAS FINALES
+execute on-error     = Error_SP cob_jubi..sp_ju_exec_vistas
+@i_c_operacion       = 'G'
+
+!ELIMINAR ARCHIVO ../listados/salida.txt ../listados/ju_cpp_tot_vw_in.log ../listados/ju_cpp_tot_vw_out.log
+let $w_comando = 'rm ../listados/salida.txt ../listados/ju_cpp_tot_vw_in.log ../listados/ju_cpp_tot_vw_out.log'
+call system using $w_comando #retorno
+
+! -- BCP OUT VISTA PARA LUEGO SUBIR A COB_JUBI..JU_COMPROB_BENEF_IMPR
+do Ejecutar_BCP('cob_jubi..ju_cpp_tot_vw_fin','../listados/ju_cpp_tot_vw_2.txt','out','../listados/ju_comprob_benef_impr_out.log','S')
+
+!ELIMINAR ARCHIVO ../listados/ju_comprob_benef_impr_out.log
+let $w_comando = 'rm ../listados/ju_comprob_benef_impr_out.log'
+call system using $w_comando #retorno
+
+let $w_sp      = 'ju_gentot_cpp.sqr'
+let $w_observa = 'BCP IN SOBRE LA TABLA cob_jubi..ju_comprob_benef_impr'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+! -- BCP IN SOBRE JU_COMPROB_BENEF_IMPR
+do Ejecutar_BCP('cob_jubi..ju_comprob_benef_impr','../listados/ju_cpp_tot_vw_2.txt','in','../listados/ju_comprob_benef_impr_in.log','S')
+
+!ELIMINAR ARCHIVO ../listados/ju_cpp_tot_vw_2.txt ../listados/ju_comprob_benef_impr_in.log
+let $w_comando = 'rm ../listados/ju_cpp_tot_vw_2.txt ../listados/ju_comprob_benef_impr_in.log'
+call system using $w_comando #retorno
+
+let $w_sp      = 'sp_ju_exec_vistas'
+let $w_observa = 'CREAMOS CABECERAS Y LINEAS DE DETALLE -> OPERACION C'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+! -- CREAMOS CABECERAS / CREAMOS LINEAS DE DETALLE
+execute on-error     = Error_SP cob_jubi..sp_ju_exec_vistas
+@i_c_operacion       = 'C'
+
+let $w_sp      = 'ju_gentot_cpp.sqr'
+let $w_observa = 'EJECUCION DEL shell script -> ju_gentot_bcp.sh = 1'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+let $nombre_script = 'sh ../scripts/ju_gentot_bcp.sh ' || '1 ' || $w_usuario || ' ' || $w_password || ' > ../listados/bcp_out1.log'
+call system using $nombre_script #retorno
+
+let $w_sp      = 'ju_gentot_cpp.sqr'
+let $w_observa = 'BCP IN TEMPORAL CONCEPTOS HACIA LAS TABLAS tempdb..ju_conceptos_01_12 Y tempdb..ju_conceptos_13_25'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+!IN TEMPORAL CONCEPTOS
+do Ejecutar_BCP('tempdb..ju_conceptos_01_12','../listados/ju_conceptos_01_12.txt','in','../listados/ju_conceptos_tmp_in.log','S')
+do Ejecutar_BCP('tempdb..ju_conceptos_01_12','../listados/ju_conceptos_01_12_h.txt','in','../listados/ju_conceptos_tmp_in.log','N')
+do Ejecutar_BCP('tempdb..ju_conceptos_13_25','../listados/ju_conceptos_13_25.txt','in','../listados/ju_conceptos_tmp_in.log','N')
+do Ejecutar_BCP('tempdb..ju_conceptos_13_25','../listados/ju_conceptos_13_25_h.txt','in','../listados/ju_conceptos_tmp_in.log','N')
+
+!ELIMINAR ARCHIVO ../listados/ju_conceptos_01_12.txt ../listados/ju_conceptos_01_12_h.txt ../listados/ju_conceptos_13_25.txt ../listados/ju_conceptos_13_25_h.txt ../listados/bcp_out1.log
+let $w_comando = 'rm ../listados/ju_conceptos_01_12.txt ../listados/ju_conceptos_01_12_h.txt ../listados/ju_conceptos_13_25.txt ../listados/ju_conceptos_13_25_h.txt ../listados/bcp_out1.log'
+call system using $w_comando #retorno
+
+!ELIMINAR ARCHIVO ../listados/ju_conceptos_tmp_in.log
+let $w_comando = 'rm ../listados/ju_conceptos_tmp_in.log'
+call system using $w_comando #retorno
+
+let $w_sp      = 'ju_gentot_cpp.sqr'
+let $w_observa = 'EJECUCION DEL shell script -> ju_gentot_bcp.sh = 2'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+let $nombre_script = 'sh ../scripts/ju_gentot_bcp.sh ' || '2 ' || $w_usuario || ' ' || $w_password || ' > ../listados/bcp_out2.log'
+call system using $nombre_script #retorno
+
+let $w_sp      = 'ju_gentot_cpp.sqr'
+let $w_observa = 'BCP IN CABECERAS A LA TABLA cob_jubi..ju_lineas_cpp -> ju_gentot_lcabecera_1_vw.txt / ju_gentot_lcabecera_9_vw.txt'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+!IN CABECERA
+!VERIFICA SI EXISTEN LOS ARCHIVOS PARA LA 1ER LINEA DE CABECERA
+let #w_filestatus = 1
+let $w_archivocab = '../listados/ju_gentot_lcabecera_1_vw.txt'
+
+let #w_filestatus = exists($w_archivocab)
+
+if #filestatus = 0
+   do Ejecutar_BCP('cob_jubi..ju_lineas_cpp',$w_archivocab,'in','../listados/ju_cab_in.log','S')
+else
+   let $mensaje_error = 'ERROR AL EJECUTAR BCP, VERIFIQUE ARCHIVO: ' || $w_archivocab
+   do Abortar
+end-if
+
+let #w_filestatus = 1
+let $w_archivocab = '../listados/ju_gentot_lcabecera_1_h_vw.txt'
+
+let #w_filestatus = exists($w_archivocab)
+
+if #filestatus = 0
+   do Ejecutar_BCP('cob_jubi..ju_lineas_cpp',$w_archivocab,'in','../listados/ju_cab_in.log','S')
+else
+   let $mensaje_error = 'ERROR AL EJECUTAR BCP, VERIFIQUE ARCHIVO: ' || $w_archivocab
+   do Abortar
+end-if
+
+!VERIFICA SI EXISTEN LOS ARCHIVOS PARA LA 2DA LINEA DE CABECERA
+let #w_filestatus = 1
+let $w_archivocab = '../listados/ju_gentot_lcabecera_2_vw.txt'
+
+let #w_filestatus = exists($w_archivocab)
+
+if #filestatus = 0
+   do Ejecutar_BCP('cob_jubi..ju_lineas_cpp',$w_archivocab,'in','../listados/ju_cab_in.log','S')
+else
+   let $mensaje_error = 'ERROR AL EJECUTAR BCP, VERIFIQUE ARCHIVO: ' || $w_archivocab
+   do Abortar
+end-if
+
+let #w_filestatus = 1
+let $w_archivocab = '../listados/ju_gentot_lcabecera_2_h_vw.txt'
+
+let #w_filestatus = exists($w_archivocab)
+
+if #filestatus = 0
+   do Ejecutar_BCP('cob_jubi..ju_lineas_cpp',$w_archivocab,'in','../listados/ju_cab_in.log','S')
+else
+   let $mensaje_error = 'ERROR AL EJECUTAR BCP, VERIFIQUE ARCHIVO: ' || $w_archivocab
+   do Abortar
+end-if
+
+!VERIFICA SI EXISTE EL ARCHIVO PARA LA 3ER LINEA DE CABECERA
+let #w_filestatus = 1
+let $w_archivocab = '../listados/ju_gentot_lcabecera_3_vw.txt'
+
+let #w_filestatus = exists($w_archivocab)
+
+if #filestatus = 0
+   do Ejecutar_BCP('cob_jubi..ju_lineas_cpp',$w_archivocab,'in','../listados/ju_cab_in.log','S')
+else
+   let $mensaje_error = 'ERROR AL EJECUTAR BCP, VERIFIQUE ARCHIVO: ' || $w_archivocab
+   do Abortar
+end-if
+
+!VERIFICA SI EXISTEN LOS ARCHIVOS PARA LA 4TA LINEA DE CABECERA
+let #w_filestatus = 1
+let $w_archivocab = '../listados/ju_gentot_lcabecera_4_vw.txt'
+
+let #w_filestatus = exists($w_archivocab)
+
+if #filestatus = 0
+   do Ejecutar_BCP('cob_jubi..ju_lineas_cpp',$w_archivocab,'in','../listados/ju_cab_in.log','S')
+else
+   let $mensaje_error = 'ERROR AL EJECUTAR BCP, VERIFIQUE ARCHIVO: ' || $w_archivocab
+   do Abortar
+end-if
+
+let #w_filestatus = 1
+let $w_archivocab = '../listados/ju_gentot_lcabecera_4_h_vw.txt'
+
+let #w_filestatus = exists($w_archivocab)
+
+if #filestatus = 0
+   do Ejecutar_BCP('cob_jubi..ju_lineas_cpp',$w_archivocab,'in','../listados/ju_cab_in.log','S')
+else
+   let $mensaje_error = 'ERROR AL EJECUTAR BCP, VERIFIQUE ARCHIVO: ' || $w_archivocab
+   do Abortar
+end-if
+
+!VERIFICA SI EXISTEN LOS ARCHIVOS PARA LA 5TA LINEA DE CABECERA
+let #w_filestatus = 1
+let $w_archivocab = '../listados/ju_gentot_lcabecera_5_vw.txt'
+
+let #w_filestatus = exists($w_archivocab)
+
+if #filestatus = 0
+   do Ejecutar_BCP('cob_jubi..ju_lineas_cpp',$w_archivocab,'in','../listados/ju_cab_in.log','S')
+else
+   let $mensaje_error = 'ERROR AL EJECUTAR BCP, VERIFIQUE ARCHIVO: ' || $w_archivocab
+   do Abortar
+end-if
+
+let #w_filestatus = 1
+let $w_archivocab = '../listados/ju_gentot_lcabecera_5_h_vw.txt'
+
+let #w_filestatus = exists($w_archivocab)
+
+if #filestatus = 0
+   do Ejecutar_BCP('cob_jubi..ju_lineas_cpp',$w_archivocab,'in','../listados/ju_cab_in.log','S')
+else
+   let $mensaje_error = 'ERROR AL EJECUTAR BCP, VERIFIQUE ARCHIVO: ' || $w_archivocab
+   do Abortar
+end-if
+
+!VERIFICA SI EXISTEN LOS ARCHIVOS PARA LA 6TA LINEA DE CABECERA
+let #w_filestatus = 1
+let $w_archivocab = '../listados/ju_gentot_lcabecera_6_vw.txt'
+
+let #w_filestatus = exists($w_archivocab)
+
+if #filestatus = 0
+   do Ejecutar_BCP('cob_jubi..ju_lineas_cpp',$w_archivocab,'in','../listados/ju_cab_in.log','S')
+else
+   let $mensaje_error = 'ERROR AL EJECUTAR BCP, VERIFIQUE ARCHIVO: ' || $w_archivocab
+   do Abortar
+end-if
+
+let #w_filestatus = 1
+let $w_archivocab = '../listados/ju_gentot_lcabecera_6_h_vw.txt'
+
+let #w_filestatus = exists($w_archivocab)
+
+if #filestatus = 0
+   do Ejecutar_BCP('cob_jubi..ju_lineas_cpp',$w_archivocab,'in','../listados/ju_cab_in.log','S')
+else
+   let $mensaje_error = 'ERROR AL EJECUTAR BCP, VERIFIQUE ARCHIVO: ' || $w_archivocab
+   do Abortar
+end-if
+
+!VERIFICA SI EXISTEN LOS ARCHIVOS PARA LA 7MA LINEA DE CABECERA
+let #w_filestatus = 1
+let $w_archivocab = '../listados/ju_gentot_lcabecera_7_vw.txt'
+
+let #w_filestatus = exists($w_archivocab)
+
+if #filestatus = 0
+   do Ejecutar_BCP('cob_jubi..ju_lineas_cpp',$w_archivocab,'in','../listados/ju_cab_in.log','S')
+else
+   let $mensaje_error = 'ERROR AL EJECUTAR BCP, VERIFIQUE ARCHIVO: ' || $w_archivocab
+   do Abortar
+end-if
+
+let #w_filestatus = 1
+let $w_archivocab = '../listados/ju_gentot_lcabecera_7_h_vw.txt'
+
+let #w_filestatus = exists($w_archivocab)
+
+if #filestatus = 0
+   do Ejecutar_BCP('cob_jubi..ju_lineas_cpp',$w_archivocab,'in','../listados/ju_cab_in.log','S')
+else
+   let $mensaje_error = 'ERROR AL EJECUTAR BCP, VERIFIQUE ARCHIVO: ' || $w_archivocab
+   do Abortar
+end-if
+
+!VERIFICA SI EXISTEN LOS ARCHIVOS PARA LA 8VA LINEA DE CABECERA
+let #w_filestatus = 1
+let $w_archivocab = '../listados/ju_gentot_lcabecera_8_vw.txt'
+
+let #w_filestatus = exists($w_archivocab)
+
+if #filestatus = 0
+   do Ejecutar_BCP('cob_jubi..ju_lineas_cpp',$w_archivocab,'in','../listados/ju_cab_in.log','S')
+else
+   let $mensaje_error = 'ERROR AL EJECUTAR BCP, VERIFIQUE ARCHIVO: ' || $w_archivocab
+   do Abortar
+end-if
+
+let #w_filestatus = 1
+let $w_archivocab = '../listados/ju_gentot_lcabecera_8_h_vw.txt'
+
+let #w_filestatus = exists($w_archivocab)
+
+if #filestatus = 0
+   do Ejecutar_BCP('cob_jubi..ju_lineas_cpp',$w_archivocab,'in','../listados/ju_cab_in.log','S')
+else
+   let $mensaje_error = 'ERROR AL EJECUTAR BCP, VERIFIQUE ARCHIVO: ' || $w_archivocab
+   do Abortar
+end-if
+
+!VERIFICA SI EXISTEN LOS ARCHIVOS PARA LA 9NA LINEA DE CABECERA
+let #w_filestatus = 1
+let $w_archivocab = '../listados/ju_gentot_lcabecera_9_vw.txt'
+
+let #w_filestatus = exists($w_archivocab)
+
+if #filestatus = 0
+   do Ejecutar_BCP('cob_jubi..ju_lineas_cpp',$w_archivocab,'in','../listados/ju_cab_in.log','S')
+else
+   let $mensaje_error = 'ERROR AL EJECUTAR BCP, VERIFIQUE ARCHIVO: ' || $w_archivocab
+   do Abortar
+end-if
+
+let #w_filestatus = 1
+let $w_archivocab = '../listados/ju_gentot_lcabecera_9_h_vw.txt'
+
+let #w_filestatus = exists($w_archivocab)
+
+if #filestatus = 0
+   do Ejecutar_BCP('cob_jubi..ju_lineas_cpp',$w_archivocab,'in','../listados/ju_cab_in.log','S')
+else
+   let $mensaje_error = 'ERROR AL EJECUTAR BCP, VERIFIQUE ARCHIVO: ' || $w_archivocab
+   do Abortar
+end-if
+
+!ELIMINAR ARCHIVO ../listados/ju_cab_out.log ../listados/bcp_out2.log
+let $w_comando = 'rm ../listados/ju_cab_in.log ../listados/bcp_out2.log'
+call system using $w_comando #retorno
+
+!OUT/IN CONCEPTOS
+let $w_sp      = 'sp_ju_lineas_concepto'
+let $w_observa = 'BCP OUT/IN CONCEPTOS -> OPERACION = C / LINEA = 9'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_lineas_concepto
+@i_c_operacion    = 'C',
+@i_n_linea        = 9
+
+do Ejecutar_BCP('cob_jubi..ju_v_concepto1','../listados/ju_v_co1.txt','out','../listados/ju_concep_out.log','S')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_co1.txt','in','../listados/ju_concep_in.log','S')
+
+let $w_observa = 'BCP OUT/IN CONCEPTOS -> OPERACION = C / LINEA = 10'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_lineas_concepto
+@i_c_operacion    = 'C',
+@i_n_linea        = 10
+
+do Ejecutar_BCP('cob_jubi..ju_v_concepto2','../listados/ju_v_co2.txt','out','../listados/ju_concep_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_co2.txt','in','../listados/ju_concep_in.log','N')
+
+let $w_observa = 'BCP OUT/IN CONCEPTOS -> OPERACION = C / LINEA = 11'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_lineas_concepto
+@i_c_operacion    = 'C',
+@i_n_linea        = 11
+
+do Ejecutar_BCP('cob_jubi..ju_v_concepto3','../listados/ju_v_co3.txt','out','../listados/ju_concep_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_co3.txt','in','../listados/ju_concep_in.log','N')
+
+let $w_observa = 'BCP OUT/IN CONCEPTOS -> OPERACION = C / LINEA = 12'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_lineas_concepto
+@i_c_operacion    = 'C',
+@i_n_linea        = 12
+
+do Ejecutar_BCP('cob_jubi..ju_v_concepto4','../listados/ju_v_co4.txt','out','../listados/ju_concep_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_co4.txt','in','../listados/ju_concep_in.log','N')
+
+let $w_observa = 'BCP OUT/IN CONCEPTOS -> OPERACION = C / LINEA = 13'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_lineas_concepto
+@i_c_operacion    = 'C',
+@i_n_linea        = 13
+
+do Ejecutar_BCP('cob_jubi..ju_v_concepto5','../listados/ju_v_co5.txt','out','../listados/ju_concep_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_co5.txt','in','../listados/ju_concep_in.log','N')
+
+let $w_observa = 'BCP OUT/IN CONCEPTOS -> OPERACION = C / LINEA = 14'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_lineas_concepto
+@i_c_operacion    = 'C',
+@i_n_linea        = 14
+
+do Ejecutar_BCP('cob_jubi..ju_v_concepto6','../listados/ju_v_co6.txt','out','../listados/ju_concep_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_co6.txt','in','../listados/ju_concep_in.log','N')
+
+let $w_observa = 'BCP OUT/IN CONCEPTOS -> OPERACION = C / LINEA = 15'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_lineas_concepto
+@i_c_operacion    = 'C',
+@i_n_linea        = 15
+
+do Ejecutar_BCP('cob_jubi..ju_v_concepto7','../listados/ju_v_co7.txt','out','../listados/ju_concep_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_co7.txt','in','../listados/ju_concep_in.log','N')
+
+let $w_observa = 'BCP OUT/IN CONCEPTOS -> OPERACION = C / LINEA = 16'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_lineas_concepto
+@i_c_operacion    = 'C',
+@i_n_linea        = 16
+
+do Ejecutar_BCP('cob_jubi..ju_v_concepto8','../listados/ju_v_co8.txt','out','../listados/ju_concep_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_co8.txt','in','../listados/ju_concep_in.log','N')
+
+let $w_observa = 'BCP OUT/IN CONCEPTOS -> OPERACION = C / LINEA = 17'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_lineas_concepto
+@i_c_operacion    = 'C',
+@i_n_linea        = 17
+
+do Ejecutar_BCP('cob_jubi..ju_v_concepto9','../listados/ju_v_co9.txt','out','../listados/ju_concep_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_co9.txt','in','../listados/ju_concep_in.log','N')
+
+let $w_observa = 'BCP OUT/IN CONCEPTOS -> OPERACION = C / LINEA = 18'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_lineas_concepto
+@i_c_operacion    = 'C',
+@i_n_linea        = 18
+
+do Ejecutar_BCP('cob_jubi..ju_v_concepto10','../listados/ju_v_co10.txt','out','../listados/ju_concep_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_co10.txt','in','../listados/ju_concep_in.log','N')
+
+let $w_observa = 'BCP OUT/IN CONCEPTOS -> OPERACION = C / LINEA = 19'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_lineas_concepto
+@i_c_operacion    = 'C',
+@i_n_linea        = 19
+
+do Ejecutar_BCP('cob_jubi..ju_v_concepto11','../listados/ju_v_co11.txt','out','../listados/ju_concep_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_co11.txt','in','../listados/ju_concep_in.log','N')
+
+let $w_observa = 'BCP OUT/IN CONCEPTOS -> OPERACION = C / LINEA = 20'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_lineas_concepto
+@i_c_operacion    = 'C',
+@i_n_linea        = 20
+
+do Ejecutar_BCP('cob_jubi..ju_v_concepto12','../listados/ju_v_co12.txt','out','../listados/ju_concep_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_co12.txt','in','../listados/ju_concep_in.log','N')
+
+let $w_observa = 'BCP OUT/IN CONCEPTOS -> OPERACION = C / LINEA = 21'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_lineas_concepto
+@i_c_operacion    = 'C',
+@i_n_linea        = 21
+
+do Ejecutar_BCP('cob_jubi..ju_v_concepto13','../listados/ju_v_co13.txt','out','../listados/ju_concep_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_co13.txt','in','../listados/ju_concep_in.log','N')
+
+let $w_observa = 'BCP OUT/IN CONCEPTOS -> OPERACION = C / LINEA = 22'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_lineas_concepto
+@i_c_operacion    = 'C',
+@i_n_linea        = 22
+
+do Ejecutar_BCP('cob_jubi..ju_v_concepto14','../listados/ju_v_co14.txt','out','../listados/ju_concep_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_co14.txt','in','../listados/ju_concep_in.log','N')
+
+let $w_observa = 'BCP OUT/IN CONCEPTOS -> OPERACION = C / LINEA = 23'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_lineas_concepto
+@i_c_operacion    = 'C',
+@i_n_linea        = 23
+
+do Ejecutar_BCP('cob_jubi..ju_v_concepto15','../listados/ju_v_co15.txt','out','../listados/ju_concep_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_co15.txt','in','../listados/ju_concep_in.log','N')
+
+let $w_observa = 'BCP OUT/IN CONCEPTOS -> OPERACION = C / LINEA = 24'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_lineas_concepto
+@i_c_operacion    = 'C',
+@i_n_linea        = 24
+
+do Ejecutar_BCP('cob_jubi..ju_v_concepto16','../listados/ju_v_co16.txt','out','../listados/ju_concep_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_co16.txt','in','../listados/ju_concep_in.log','N')
+
+let $w_observa = 'BCP OUT/IN CONCEPTOS -> OPERACION = C / LINEA = 25'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_lineas_concepto
+@i_c_operacion    = 'C',
+@i_n_linea        = 25
+
+do Ejecutar_BCP('cob_jubi..ju_v_concepto17','../listados/ju_v_co17.txt','out','../listados/ju_concep_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_co17.txt','in','../listados/ju_concep_in.log','N')
+
+let $w_observa = 'BCP OUT/IN CONCEPTOS -> OPERACION = C / LINEA = 26'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_lineas_concepto
+@i_c_operacion    = 'C',
+@i_n_linea        = 26
+
+do Ejecutar_BCP('cob_jubi..ju_v_concepto18','../listados/ju_v_co18.txt','out','../listados/ju_concep_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_co18.txt','in','../listados/ju_concep_in.log','N')
+
+let $w_observa = 'BCP OUT/IN CONCEPTOS -> OPERACION = C / LINEA = 27'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_lineas_concepto
+@i_c_operacion    = 'C',
+@i_n_linea        = 27
+
+do Ejecutar_BCP('cob_jubi..ju_v_concepto19','../listados/ju_v_co19.txt','out','../listados/ju_concep_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_co19.txt','in','../listados/ju_concep_in.log','N')
+
+let $w_observa = 'BCP OUT/IN CONCEPTOS -> OPERACION = C / LINEA = 28'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_lineas_concepto
+@i_c_operacion    = 'C',
+@i_n_linea        = 28
+
+do Ejecutar_BCP('cob_jubi..ju_v_concepto20','../listados/ju_v_co20.txt','out','../listados/ju_concep_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_co20.txt','in','../listados/ju_concep_in.log','N')
+
+let $w_observa = 'BCP OUT/IN CONCEPTOS -> OPERACION = C / LINEA = 29'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_lineas_concepto
+@i_c_operacion    = 'C',
+@i_n_linea        = 29
+
+do Ejecutar_BCP('cob_jubi..ju_v_concepto21','../listados/ju_v_co21.txt','out','../listados/ju_concep_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_co21.txt','in','../listados/ju_concep_in.log','N')
+
+let $w_observa = 'BCP OUT/IN CONCEPTOS -> OPERACION = C / LINEA = 30'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_lineas_concepto
+@i_c_operacion    = 'C',
+@i_n_linea        = 30
+
+do Ejecutar_BCP('cob_jubi..ju_v_concepto22','../listados/ju_v_co22.txt','out','../listados/ju_concep_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_co22.txt','in','../listados/ju_concep_in.log','N')
+
+let $w_observa = 'BCP OUT/IN CONCEPTOS -> OPERACION = C / LINEA = 31'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_lineas_concepto
+@i_c_operacion    = 'C',
+@i_n_linea        = 31
+
+do Ejecutar_BCP('cob_jubi..ju_v_concepto23','../listados/ju_v_co23.txt','out','../listados/ju_concep_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_co23.txt','in','../listados/ju_concep_in.log','N')
+
+let $w_observa = 'BCP OUT/IN CONCEPTOS -> OPERACION = C / LINEA = 32'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_lineas_concepto
+@i_c_operacion    = 'C',
+@i_n_linea        = 32
+
+do Ejecutar_BCP('cob_jubi..ju_v_concepto24','../listados/ju_v_co24.txt','out','../listados/ju_concep_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_co24.txt','in','../listados/ju_concep_in.log','N')
+
+let $w_observa = 'BCP OUT/IN CONCEPTOS -> OPERACION = C / LINEA = 33'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_lineas_concepto
+@i_c_operacion    = 'C',
+@i_n_linea        = 33
+
+do Ejecutar_BCP('cob_jubi..ju_v_concepto25','../listados/ju_v_co25.txt','out','../listados/ju_concep_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_co25.txt','in','../listados/ju_concep_in.log','N')
+
+!ELIMINAR ARCHIVO ../listados/ju_concep_in.log ../listados/ju_concep_in.log
+let $w_comando = 'rm ../listados/ju_concep_in.log ../listados/ju_concep_out.log'
+call system using $w_comando #retorno
+
+!OUT/IN TRAILER
+let $w_sp      = 'sp_ju_cpp_vista'
+let $w_observa = 'BCP OUT/IN TRAILER -> OPERACION = P / LINEA = 34'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_cpp_vista
+@i_c_operacion    = 'P',
+@i_n_linea        = 34
+
+do Ejecutar_BCP('cob_jubi..ju_gentot_trailer_1_vw','../listados/ju_v_tr1.txt','out','../listados/ju_trailer_out.log','S')
+do Ejecutar_BCP('cob_jubi..ju_gentot_trailer_1_h_vw','../listados/ju_v_tr1_h.txt','out','../listados/ju_trailer_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_tr1.txt','in','../listados/ju_trailer_in.log','S')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_tr1_h.txt','in','../listados/ju_trailer_in.log','N')
+
+let $w_observa = 'BCP OUT/IN TRAILER -> OPERACION = P / LINEA = 35'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_cpp_vista
+@i_c_operacion    = 'P',
+@i_n_linea        = 35
+
+do Ejecutar_BCP('cob_jubi..ju_gentot_trailer_2_vw','../listados/ju_v_tr2.txt','out','../listados/ju_trailer_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_gentot_trailer_2_h_vw','../listados/ju_v_tr2_h.txt','out','../listados/ju_trailer_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_tr2.txt','in','../listados/ju_trailer_in.log','S')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_tr2_h.txt','in','../listados/ju_trailer_in.log','N')
+
+let $w_observa = 'BCP OUT/IN TRAILER -> OPERACION = P / LINEA = 36'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_cpp_vista
+@i_c_operacion    = 'P',
+@i_n_linea        = 36
+
+do Ejecutar_BCP('cob_jubi..ju_gentot_trailer_3_vw','../listados/ju_v_tr3.txt','out','../listados/ju_trailer_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_gentot_trailer_3_h_vw','../listados/ju_v_tr3_h.txt','out','../listados/ju_trailer_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_tr3.txt','in','../listados/ju_trailer_in.log','S')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_tr3_h.txt','in','../listados/ju_trailer_in.log','N')
+
+let $w_observa = 'BCP OUT/IN RENGLON -> OPERACION = P / LINEA = 37'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_cpp_vista
+@i_c_operacion    = 'P',
+@i_n_linea        = 37
+
+do Ejecutar_BCP('cob_jubi..ju_gentot_renglon_1_vw','../listados/ju_v_reng1.txt','out','../listados/ju_trailer_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_gentot_renglon_1_h_vw','../listados/ju_v_reng1_h.txt','out','../listados/ju_trailer_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_reng1.txt','in','../listados/ju_trailer_in.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_reng1_h.txt','in','../listados/ju_trailer_in.log','N')
+
+let $w_observa = 'BCP OUT/IN RENGLON -> OPERACION = P / LINEA = 38'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_cpp_vista
+@i_c_operacion    = 'P',
+@i_n_linea        = 38
+
+do Ejecutar_BCP('cob_jubi..ju_gentot_renglon_2_vw','../listados/ju_v_reng2.txt','out','../listados/ju_trailer_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_gentot_renglon_2_h_vw','../listados/ju_v_reng2_h.txt','out','../listados/ju_trailer_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_reng2.txt','in','../listados/ju_trailer_in.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_reng2_h.txt','in','../listados/ju_trailer_in.log','N')
+
+let $w_observa = 'BCP OUT/IN RENGLON -> OPERACION = P / LINEA = 39'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_cpp_vista
+@i_c_operacion    = 'P',
+@i_n_linea        = 39
+
+do Ejecutar_BCP('cob_jubi..ju_gentot_renglon_3_vw','../listados/ju_v_reng3.txt','out','../listados/ju_trailer_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_gentot_renglon_3_h_vw','../listados/ju_v_reng3_h.txt','out','../listados/ju_trailer_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_reng3.txt','in','../listados/ju_trailer_in.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_reng3_h.txt','in','../listados/ju_trailer_in.log','N')
+
+let $w_observa = 'BCP OUT/IN RENGLON -> OPERACION = P / LINEA = 40'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_cpp_vista
+@i_c_operacion    = 'P',
+@i_n_linea        = 40
+
+do Ejecutar_BCP('cob_jubi..ju_gentot_renglon_4_vw','../listados/ju_v_reng4.txt','out','../listados/ju_trailer_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_gentot_renglon_4_h_vw','../listados/ju_v_reng4_h.txt','out','../listados/ju_trailer_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_reng4.txt','in','../listados/ju_trailer_in.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_reng4_h.txt','in','../listados/ju_trailer_in.log','N')
+
+let $w_observa = 'BCP OUT/IN RENGLON -> OPERACION = P / LINEA = 41'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_cpp_vista
+@i_c_operacion    = 'P',
+@i_n_linea        = 41
+
+do Ejecutar_BCP('cob_jubi..ju_gentot_renglon_5_vw','../listados/ju_v_reng5.txt','out','../listados/ju_trailer_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_gentot_renglon_5_h_vw','../listados/ju_v_reng5_h.txt','out','../listados/ju_trailer_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_reng5.txt','in','../listados/ju_trailer_in.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_v_reng5_h.txt','in','../listados/ju_trailer_in.log','N')
+
+let $w_observa = 'BCP OUT/IN PIE -> OPERACION = P / LINEA = 42'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_cpp_vista
+@i_c_operacion    = 'P',
+@i_n_linea        = 42
+
+do Ejecutar_BCP('cob_jubi..ju_pie_1_vw','../listados/ju_pie_1_vw.txt','out','../listados/ju_trailer_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_pie_1_h_vw','../listados/ju_pie_1_h_vw.txt','out','../listados/ju_trailer_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_pie_1_vw.txt','in','../listados/ju_trailer_in.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_pie_1_h_vw.txt','in','../listados/ju_trailer_in.log','N')
+
+let $w_observa = 'BCP OUT/IN PIE -> OPERACION = P / LINEA = 43'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_cpp_vista
+@i_c_operacion    = 'P',
+@i_n_linea        = 43
+
+do Ejecutar_BCP('cob_jubi..ju_pie_2_vw','../listados/ju_pie_2_vw.txt','out','../listados/ju_trailer_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_pie_2_h_vw','../listados/ju_pie_2_h_vw.txt','out','../listados/ju_trailer_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_pie_2_vw.txt','in','../listados/ju_trailer_in.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_pie_2_h_vw.txt','in','../listados/ju_trailer_in.log','N')
+
+let $w_observa = 'BCP OUT/IN PIE -> OPERACION = P / LINEA = 44'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_cpp_vista
+@i_c_operacion    = 'P',
+@i_n_linea        = 44
+
+do Ejecutar_BCP('cob_jubi..ju_pie_3_vw','../listados/ju_pie_3_vw.txt','out','../listados/ju_trailer_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_pie_3_h_vw','../listados/ju_pie_3_h_vw.txt','out','../listados/ju_trailer_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_pie_3_vw.txt','in','../listados/ju_trailer_in.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_pie_3_h_vw.txt','in','../listados/ju_trailer_in.log','N')
+
+let $w_observa = 'BCP OUT/IN PIE -> OPERACION = P / LINEA = 45'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_cpp_vista
+@i_c_operacion    = 'P',
+@i_n_linea        = 45
+
+do Ejecutar_BCP('cob_jubi..ju_pie_4_vw','../listados/ju_pie_4_vw.txt','out','../listados/ju_trailer_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_pie_4_h_vw','../listados/ju_pie_4_h_vw.txt','out','../listados/ju_trailer_out.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_pie_4_vw.txt','in','../listados/ju_trailer_in.log','N')
+do Ejecutar_BCP('cob_jubi..ju_lineas_cpp','../listados/ju_pie_4_h_vw.txt','in','../listados/ju_trailer_in.log','N')
+
+!ELIMINAR ARCHIVO ../listados/ju_trailer_out.log
+let $w_comando = 'rm ../listados/ju_trailer_out.log'
+call system using $w_comando #retorno
+
+!ELIMINAR ARCHIVO ../listados/ju_trailer_out.log
+let $w_comando = 'rm ../listados/ju_trailer_in.log'
+call system using $w_comando #retorno
+
+let $w_sp      = 'sp_ju_cpp_vista'
+let $w_observa = 'ACTUALIZA LA TABLA cob_jubi..ju_d_lineas_cpp_tot EN RELACION A LA TABLA cob_jubi..ju_lineas_cpp -> OPERACION = A'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+execute on-error  = Error_SP cob_jubi..sp_ju_cpp_vista
+@i_c_operacion    = 'A'
+
+let $w_sp      = 'ju_gentot_cpp.sqr'
+let $w_observa = 'SE ELIMINAN LOS ARCHIVOS BCP OUT/IN'
+
+execute -XC on-error = Error_SP cob_jubi..sp_ju_logueo_errores
+   @i_f_proceso      = &w_fecha_proc,
+   @i_d_programa     = $w_sqr       ,
+   @i_d_proceso      = $w_sp        ,
+   @i_d_error        = ''           ,
+   @i_d_observacion  = $w_observa   ,
+   @i_c_busca_desc   = 'N'
+
+!ELIMINAR LOS ARCHIVOS BCP
+do Eliminar_Archivo ('ju_gentot_lcabecera_1_vw.txt')
+do Eliminar_Archivo ('ju_gentot_lcabecera_1_h_vw.txt')
+do Eliminar_Archivo ('ju_gentot_lcabecera_2_vw.txt')
+do Eliminar_Archivo ('ju_gentot_lcabecera_2_h_vw.txt')
+do Eliminar_Archivo ('ju_gentot_lcabecera_3_vw.txt')
+! do Eliminar_Archivo ('ju_gentot_lcabecera_3_h_vw.txt')
+do Eliminar_Archivo ('ju_gentot_lcabecera_4_vw.txt')
+do Eliminar_Archivo ('ju_gentot_lcabecera_4_h_vw.txt')
+do Eliminar_Archivo ('ju_gentot_lcabecera_5_vw.txt')
+do Eliminar_Archivo ('ju_gentot_lcabecera_5_h_vw.txt')
+do Eliminar_Archivo ('ju_gentot_lcabecera_6_vw.txt')
+do Eliminar_Archivo ('ju_gentot_lcabecera_6_h_vw.txt')
+do Eliminar_Archivo ('ju_gentot_lcabecera_7_vw.txt')
+do Eliminar_Archivo ('ju_gentot_lcabecera_7_h_vw.txt')
+do Eliminar_Archivo ('ju_gentot_lcabecera_8_vw.txt')
+do Eliminar_Archivo ('ju_gentot_lcabecera_8_h_vw.txt')
+do Eliminar_Archivo ('ju_gentot_lcabecera_9_vw.txt')
+do Eliminar_Archivo ('ju_gentot_lcabecera_9_h_vw.txt')
+do Eliminar_Archivo ('ju_v_co1.txt')
+do Eliminar_Archivo ('ju_v_co2.txt')
+do Eliminar_Archivo ('ju_v_co3.txt')
+do Eliminar_Archivo ('ju_v_co4.txt')
+do Eliminar_Archivo ('ju_v_co5.txt')
+do Eliminar_Archivo ('ju_v_co6.txt')
+do Eliminar_Archivo ('ju_v_co7.txt')
+do Eliminar_Archivo ('ju_v_co8.txt')
+do Eliminar_Archivo ('ju_v_co9.txt')
+do Eliminar_Archivo ('ju_v_co10.txt')
+do Eliminar_Archivo ('ju_v_co11.txt')
+do Eliminar_Archivo ('ju_v_co12.txt')
+do Eliminar_Archivo ('ju_v_co13.txt')
+do Eliminar_Archivo ('ju_v_co14.txt')
+do Eliminar_Archivo ('ju_v_co15.txt')
+do Eliminar_Archivo ('ju_v_co16.txt')
+do Eliminar_Archivo ('ju_v_co17.txt')
+do Eliminar_Archivo ('ju_v_co18.txt')
+do Eliminar_Archivo ('ju_v_co19.txt')
+do Eliminar_Archivo ('ju_v_co20.txt')
+do Eliminar_Archivo ('ju_v_co21.txt')
+do Eliminar_Archivo ('ju_v_co22.txt')
+do Eliminar_Archivo ('ju_v_co23.txt')
+do Eliminar_Archivo ('ju_v_co24.txt')
+do Eliminar_Archivo ('ju_v_co25.txt')
+do Eliminar_Archivo ('ju_v_tr1.txt')
+do Eliminar_Archivo ('ju_v_tr1_h.txt')
+do Eliminar_Archivo ('ju_v_tr2.txt')
+do Eliminar_Archivo ('ju_v_tr2_h.txt')
+do Eliminar_Archivo ('ju_v_tr3.txt')
+do Eliminar_Archivo ('ju_v_tr3_h.txt')
+do Eliminar_Archivo ('ju_v_reng1.txt')
+do Eliminar_Archivo ('ju_v_reng1_h.txt')
+do Eliminar_Archivo ('ju_v_reng2.txt')
+do Eliminar_Archivo ('ju_v_reng2_h.txt')
+do Eliminar_Archivo ('ju_v_reng3.txt')
+do Eliminar_Archivo ('ju_v_reng3_h.txt')
+do Eliminar_Archivo ('ju_v_reng4.txt')
+do Eliminar_Archivo ('ju_v_reng4_h.txt')
+do Eliminar_Archivo ('ju_v_reng5.txt')
+do Eliminar_Archivo ('ju_v_reng5_h.txt')
+do Eliminar_Archivo ('ju_v_reng6.txt')
+do Eliminar_Archivo ('ju_v_reng6_h.txt')
+do Eliminar_Archivo ('ju_v_reng7.txt')
+do Eliminar_Archivo ('ju_v_reng7_h.txt')
+do Eliminar_Archivo ('ju_v_reng8.txt')
+do Eliminar_Archivo ('ju_v_reng8_h.txt')
+do Eliminar_Archivo ('ju_pie_1_vw.txt')
+do Eliminar_Archivo ('ju_pie_1_h_vw.txt')
+do Eliminar_Archivo ('ju_pie_2_vw.txt')
+do Eliminar_Archivo ('ju_pie_2_h_vw.txt')
+do Eliminar_Archivo ('ju_pie_3_vw.txt')
+do Eliminar_Archivo ('ju_pie_3_h_vw.txt')
+do Eliminar_Archivo ('ju_pie_4_vw.txt')
+do Eliminar_Archivo ('ju_pie_4_h_vw.txt')
+
+End-Procedure !Proceso
+! ========================================================================
+Begin-Procedure Actualizar_Seqnos
+
+let $nombre_script = 'wc -l ../listados/ju_cpp_tot_vw_out.txt > ../listados/cantreg.txt'
+call system using $nombre_script #retorno
+
+if #retorno != 0
+   let $no_existen_registros = 'S'
+   let $msg_fin = 'ERROR AL OBTENER CANTIDAD DE REGISTROS DE ../listados/ju_cpp_tot_vw_out.txt'
+   do Abortar
+end-if
+
+open '../listados/cantreg.txt' as 3 for-reading record=30:VARY status=#w_estado
+if #w_estado != 0
+   let $msg_fin = 'ERROR AL OBTENER CANTIDAD DE REGISTROS (../listados/ju_cpp_tot_vw_out.txt)'
+   do Abortar
+end-if
+read 3 into $cantreg:30
+let #cantreg = $cantreg
+close 3
+
+End-Procedure !Actualizar_Seqnos
+! ========================================================================
+Begin-Procedure Armar_Archivo_In
+
+! ACTUALIZO SEQNOS CON CANTIDAD DE REG. TOMADOS
+Begin-Sql on-error = Error_SQL
+update cobis..cl_seqnos set
+siguiente = siguiente + 1 + #cantreg
+where tabla  = 'ju_comprob_benef_impr'
+and   bdatos = 'cob_jubi'
+End-Sql
+
+open '../listados/archivo_seqnos.txt' as 1 for-writing record=100:VARY status=#w_estado
+
+let #w_siguiente_aux = #w_siguiente
+let #w_cont = 1
+
+while #w_cont <= #cantreg
+   let $w_cadena = to_char(#w_siguiente_aux)
+   write 1 from $w_cadena
+   let #w_siguiente_aux = #w_siguiente_aux + 1
+   let #w_cont = #w_cont + 1
+end-while
+close 1
+
+let $w_comando = 'paste -d"@" ../listados/archivo_seqnos.txt ../listados/ju_cpp_tot_vw_out.txt > ../listados/salida.txt'
+call system using $w_comando #retorno
+
+!ELIMINAR ARCHIVOS
+let $w_comando = 'rm ../listados/ju_cpp_tot_vw_out.txt ../listados/ju_cpp_tot_h_vw_out.txt ../listados/archivo_seqnos.txt ../listados/cantreg.txt'
+call system using $w_comando #retorno
+
+End-Procedure !Armar_Archivo_In
+! ========================================================================
+Begin-Procedure Ejecutar_BCP ($w_base_tabla, $w_archivo_bcp, $w_accion, $w_archivo_log, $w_borra_log)
+
+if $w_borra_log = 'S'
+   let $w_log = '> ' || $w_archivo_log
+else
+   let $w_log = '>> ' || $w_archivo_log
+end-if
+
+if $w_accion = 'in'
+   !PASAR DE DOS A UNIX
+   let $comando = 'dos2unix -ascii -f ' || $w_archivo_bcp || ' ' || $w_archivo_bcp
+   call system using $comando #error
+   if #error != 0
+      show 'LA CONVERSION DEL ARCHIVO ORIGEN FALLO'
+      stop
+   end-if
+end-if
+
+let $nombre_scripts = 'bcp ' || $w_base_tabla || ' ' || $w_accion || ' ' || $w_archivo_bcp || ' -c -t"@" -U$login -P$pwd -b 10000 ' || $w_log
+call system using $nombre_scripts #retorno
+
+if #retorno != 0
+   let $w_msg = 'Error al ejecutar BCP ' || $w_accion || ' de la tabla ' || $w_base_tabla || ' archivo ' || $w_archivo_bcp
+   show $w_msg
+   do Abortar
+end-if
+
+End-Procedure !Ejecutar_BCP
+! ========================================================================
+Begin-Procedure Eliminar_Archivo ($w_archivo_ELIMINAR)
+
+!VERIFICA SI EXISTE EL ARCHIVO
+let $w_directorio = '../listados/'
+let $comando = 'test -f ' || $w_directorio || $w_archivo_ELIMINAR
+call system using $comando #retorno
+if #retorno = 0
+   let $comando = 'rm ' || $w_directorio || $w_archivo_ELIMINAR
+   call system using $comando #retorno
+end-if
+
+End-Procedure !Eliminar_Archivo
+! ========================================================================
+Begin-Procedure LeerLogin
+
+let $w_usuario = getenv('login')
+let $w_password = getenv('pwd')
+
+End-Procedure !LeerLogin
+! ========================================================================
+Begin-Procedure Error_SP
+
+show '--------------------------------------------------------'
+show 'ERROR AL EJECUTAR EL SP'
+show '--------------------------------------------------------'
+show $sql-error
+show '--------------------------------------------------------'
+
+do Log_Fin_Ejecucion
+let $mensaje_error = $w_mensaje_error
+stop quiet
+
+End-Procedure !Error_SP
+! ========================================================================
+Begin-Procedure Error_SQL
+
+show '--------------------------------------------------------'
+show 'ERROR AL EJECUTAR SENTENCIA SQL'
+show '--------------------------------------------------------'
+show $sql-error
+show '--------------------------------------------------------'
+
+do Log_Fin_Ejecucion
+let $mensaje_error = $w_mensaje_error
+stop quiet
+
+End-Procedure !Error_SQL

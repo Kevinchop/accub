@@ -23,6 +23,7 @@ class Glos extends Component
     public $tabla = "Glosario";
     public $consulta;
     public $mostrador;
+    public $info;
 
     //variables de edicion
     public $editing_id = null;
@@ -43,6 +44,14 @@ class Glos extends Component
             default:
                 $this->mostrador = Lenguaje::where('nombre', 'like', '%' . $this->consulta . '%')->orderBy('nombre', 'asc')->get();
                 break;
+        }
+
+        $existencia_lenguaje  = Lenguaje::where('nombre', $this->nombre_lenguaje)->count();
+
+        if($existencia_lenguaje == 1){
+            $this->info = "Ya existe";
+        }else{
+            $this->info = "";
         }
 
         return view('livewire.glos');

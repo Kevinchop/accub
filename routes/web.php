@@ -38,6 +38,10 @@ Route::middleware([
         return view('glosario');
     });
 
+    Route::get('/usuario', function(){
+        return view('usuario');
+    });
+
     // Route::get('/codfuente', function(){
     //     return view('codfuente');
     // });

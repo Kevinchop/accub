@@ -340,6 +340,22 @@ return [
                 ],
             ]
         ],
+        [
+            'text'        => 'Cuenta',
+            'icon'        => 'fas fa-user-cog',
+            'submenu'     => [
+                [
+                    'text' => 'Perfil',
+                    'icon' => 'fas fa-user-circle',
+                    'url'  => '/usuario'
+                ],
+                [
+                    'text' => 'Claves',
+                    'icon' => 'fas fa-user-lock',
+                    'url'  => '/',
+                ],
+            ]
+        ],
         
         // ['header' => 'account_settings'],
         // [

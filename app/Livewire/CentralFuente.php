@@ -12,26 +12,33 @@ class CentralFuente extends Component
     protected $rules = [
         'nombre_fuente' => 'required',
         'lenguaje_a_usar' => 'required',
+        'etiqueta_fuente' => 'required',
+        'desarrollo_fuente' => 'required'
 
     ];
 
-    public $consulta;
-    public $fuentes;
-    public $lenguajes;
-    public $lenguaje_a_usar = 'PHP';
-    public $info;
-    public $cantFuentes;
+    //Para hacer el insert. Vienen de los campos del formulario
     public $nombre_fuente;
+    public $lenguaje_a_usar = 'PHP';
     public $etiqueta_fuente;
     public $desarrollo_fuente;
-    public $q_fuente;
 
-    //variables de update
+    //Variables de update. Contienen los datos traidos desde la base, que impactan en los campos y que viajaran para actualizarse.
     public $editing_id = null;
     public $nombre_fuente_upd;
     public $lenguaje_fuente_upd;
     public $etiqueta_fuente_upd;
     public $desarrollo_fuente_upd;
+
+    public $fuentes; // Es la colección en el que pongo los objetos resultados de la consulta
+    public $lenguajes; // Es la conlección en el que pongo los objetos Lenguaje para armar el select
+
+    public $cantFuentes; //Es la cantidad de fuentes que voy teniendo en la base
+
+    public $q_fuente; //Simboliza el campo donde escribo lo que se usará para la búsqueda.
+
+
+    
 
 
     public function mount()
@@ -44,9 +51,8 @@ class CentralFuente extends Component
         $this->lenguajes = Lenguaje::all();
         $this->cantFuentes = Fuente::count();
         $this->fuentes = Fuente::join('lenguajes', 'fuentes.lenguaje_id', '=', 'lenguajes.id')
-            ->select('fuentes.id AS id_fuente','fuentes.nombre AS n_fuente', 'lenguajes.id AS id_lenguaje', 'fuentes.desarrollo', 'lenguajes.nombre AS n_lenguaje')
-            ->where('fuentes.nombre', 'like', '%' . $this->consulta . '%')
-            ->orderBy('fuentes.nombre', 'asc')->get();
+            ->select('fuentes.id AS id_fuente', 'fuentes.nombre AS n_fuente', 'lenguajes.id AS id_lenguaje', 'fuentes.desarrollo', 'lenguajes.nombre AS n_lenguaje')
+            ->where('fuentes.nombre', 'like', '%' . $this->q_fuente . '%')->get();
 
         return view('livewire.central-fuente');
     }

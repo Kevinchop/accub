@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Lenguaje extends Model
 {
@@ -11,5 +12,12 @@ class Lenguaje extends Model
     protected $guarded = [
         'id'
     ];
+
+    use HasMany;
     use HasFactory;
+
+    public function fuentes()
+    {
+        return $this->hasMany(Fuente::class);
+    }
 }

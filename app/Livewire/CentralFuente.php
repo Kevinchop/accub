@@ -50,9 +50,7 @@ class CentralFuente extends Component
     {
         $this->lenguajes = Lenguaje::all();
         $this->cantFuentes = Fuente::count();
-        $this->fuentes = Fuente::join('lenguajes', 'fuentes.lenguaje_id', '=', 'lenguajes.id')
-            ->select('fuentes.id AS id_fuente', 'fuentes.nombre AS n_fuente', 'lenguajes.id AS id_lenguaje', 'fuentes.desarrollo', 'lenguajes.nombre AS n_lenguaje')
-            ->where('fuentes.nombre', 'like', '%' . $this->q_fuente . '%')->get();
+        $this->fuentes = Fuente::where('nombre', 'like', '%' . $this->q_fuente . '%')->get(); //join('lenguajes', 'fuentes.lenguaje_id', '=', 'lenguajes.id')
 
         return view('livewire.central-fuente');
     }
@@ -81,7 +79,8 @@ class CentralFuente extends Component
     {
         //$fuente es una collection (array de objetos), cada registro es un objeto
         $this->editing_id = $fuente->id;
-        $this->nombre_fuente_upd = $fuente->n_fuente;
+        $this->nombre_fuente_upd = $fuente->nombre;
+        $this->lenguaje_fuente_upd = $fuente->lenguaje_id;
         $this->etiqueta_fuente_upd = $fuente->etiqueta;
         $this->desarrollo_fuente_upd = $fuente->desarrollo;
     }
@@ -89,8 +88,8 @@ class CentralFuente extends Component
     public function update(Fuente $fuente)
     {
         $fuente->update([
-            'nombre' => $this->nombre_upd,
-            'lenguaje' => $this->lenguaje_fuente_upd,
+            'nombre' => $this->nombre_fuente_upd,
+            'lenguaje_id' => $this->lenguaje_fuente_upd,
             'etiqueta' => $this->etiqueta_fuente_upd,
             'desarrollo' => $this->desarrollo_fuente_upd
         ]);

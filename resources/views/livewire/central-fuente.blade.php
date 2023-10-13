@@ -86,27 +86,31 @@
                     <!-- Este DIV d-flex, oficia de ITEM de fuente, por lo cual se puede repetir tantas veces como items haya -->
                     <div class="form-row border-bottom py-2 detalle_fuente">
                         <div class="align-self-center col-md-4 py-1">
-                            @if ($editing_id == $fuente->id_fuente)
+                            @if ($editing_id == $fuente->id)
                             <input type="text" wire:model="nombre_fuente_upd" class="form-control">
                             @else
                             <span class="form-control bg-gradient-secondary text-center" title="Fuente">
-                                {{$fuente->n_fuente}}
+                                {{$fuente->nombre}}
                             </span>
                             @endif
                         </div>
 
                         <div class="align-self-center col-md-2 py-1">
-                            @if ($editing_id == $fuente->id_fuente)
-                            <input type="text" class="form-control" wire:model='lenguaje_fuente_upd'>
+                            @if ($editing_id == $fuente->id)
+                                <select class="form-control" id="lenguaje_fuente_upd" wire:model='lenguaje_fuente_upd'>
+                                @foreach ($lenguajes as $lenguaje)
+                                <option value="{{$lenguaje->id}}">{{$lenguaje->nombre}}</option>
+                                @endforeach
+                                </select>
                             @else
-                            <div class="form-control text-center" title="Lenguaje {{$fuente->n_lenguaje}}">
-                                {{$fuente->n_lenguaje}}
-                            </div>
+                                <div class="form-control text-center">
+                                    {{$fuente->lenguaje_id}}
+                                </div>
                             @endif
                         </div>
 
                         <div class="align-self-center col-md-5 py-1">
-                            @if ($editing_id == $fuente->id_fuente)
+                            @if ($editing_id == $fuente->id)
                             <textarea class="form-control" rows="5" wire:model='desarrollo_fuente_upd'></textarea>
                             @else
                             <div class="form-control overflow-auto">
@@ -119,16 +123,15 @@
                         borde
                         derecho --}}
                         <div class="align-self-center ml-auto py-1">
-                            @if ($editing_id == $fuente->id_fuente)
-                            <button wire:click="update({{ $fuente->id_fuente }})"
-                                class="btn btn-success btn-sm mr-1">
+                            @if ($editing_id == $fuente->id)
+                            <button wire:click="update({{ $fuente->id }})" class="btn btn-success btn-sm mr-1">
                                 <i class="fa fa-check"></i>
                             </button>
                             <button wire:click="editClose()" class="btn btn-danger btn-sm">
                                 <i class="fa fa-times"></i>
                             </button>
                             @else
-                            <button wire:click="editing({{ $fuente->id_fuente }})" class="btn btn-primary btn-sm mr-1">
+                            <button wire:click="editing({{ $fuente->id }})" class="btn btn-primary btn-sm mr-1">
                                 <i class="fa fa-edit"></i>
                             </button>
                             @endif

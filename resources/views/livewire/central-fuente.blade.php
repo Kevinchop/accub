@@ -104,7 +104,8 @@
                                 </select>
                             @else
                                 <div class="form-control text-center">
-                                    {{$fuente->lenguaje_id}}
+                                    {{-- accedemos a la tabla relacionada a traves del doble método --}}
+                                    {{$fuente->lenguaje->nombre}}
                                 </div>
                             @endif
                         </div>

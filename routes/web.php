@@ -42,6 +42,10 @@ Route::middleware([
         return view('usuario');
     });
 
+    Route::get('/claves', function(){
+        return view('credenciales.claves'); //ejemplo de una ruta con subcarpetas en la vista
+    });
+
     // Route::get('/codfuente', function(){
     //     return view('codfuente');
     // });

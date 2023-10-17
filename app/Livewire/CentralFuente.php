@@ -32,6 +32,7 @@ class CentralFuente extends Component
 
     public $fuentes; // Es la colección en el que pongo los objetos resultados de la consulta
     public $lenguajes; // Es la conlección en el que pongo los objetos Lenguaje para armar el select
+    public $lenguaje_p_nombre;
 
     public $cantFuentes; //Es la cantidad de fuentes que voy teniendo en la base
 
@@ -50,7 +51,8 @@ class CentralFuente extends Component
     {
         $this->lenguajes = Lenguaje::all();
         $this->cantFuentes = Fuente::count();
-        $this->fuentes = Fuente::where('nombre', 'like', '%' . $this->q_fuente . '%')->get(); //join('lenguajes', 'fuentes.lenguaje_id', '=', 'lenguajes.id')
+        //Esta consulta ya va completa y como las tabla estan relacionadas a traves de BelongsTo() en App\Models\Fuente.php 
+        $this->fuentes = Fuente::where('nombre', 'like', '%' . $this->q_fuente . '%')->get();
 
         return view('livewire.central-fuente');
     }

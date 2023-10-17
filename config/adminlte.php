@@ -346,13 +346,13 @@ return [
             'submenu'     => [
                 [
                     'text' => 'Perfil',
-                    'icon' => 'fas fa-user-circle',
+                    'icon' => 'fas fa-id-card-alt',
                     'url'  => '/usuario'
                 ],
                 [
-                    'text' => 'Claves',
+                    'text' => 'Credenciales',
                     'icon' => 'fas fa-user-lock',
-                    'url'  => '/',
+                    'url'  => '/claves',
                 ],
             ]
         ],

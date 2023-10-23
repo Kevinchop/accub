@@ -19,7 +19,7 @@ class CentralFuente extends Component
 
     //Para hacer el insert. Vienen de los campos del formulario
     public $nombre_fuente;
-    public $lenguaje_a_usar = 'PHP';
+    public $lenguaje_a_usar = 1;
     public $etiqueta_fuente;
     public $desarrollo_fuente;
 

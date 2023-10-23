@@ -39,17 +39,17 @@ class Glos extends Component
 
         switch ($this->tabla) {
             case 'Glosario':
-                $this->mostrador = Glosario::where('nombre', 'like', '%' . $this->consulta . '%')->orderBy('nombre', 'asc')->get();
+                $this->mostrador = Glosario::where('nombre', 'like', '%' . $this->consulta . '%')->orderBy('nombre', 'asc')->limit(5)->get();
                 break;
             default:
-                $this->mostrador = Lenguaje::where('nombre', 'like', '%' . $this->consulta . '%')->orderBy('nombre', 'asc')->get();
+                $this->mostrador = Lenguaje::where('nombre', 'like', '%' . $this->consulta . '%')->orderBy('nombre', 'asc')->limit(5)->get();
                 break;
         }
 
         $existencia_lenguaje  = Lenguaje::where('nombre', $this->nombre_lenguaje)->count();
 
         if($existencia_lenguaje == 1){
-            $this->info = "Ya existe";
+            $this->info = "Ya cargado";
         }else{
             $this->info = "";
         }

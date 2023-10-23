@@ -20,6 +20,7 @@ class Fuente extends Model
     
     public function lenguaje()
     {
+        //Con esta invocacion puedo relacionar las tablas y llegar desde la tabla fuentes, a los Lenguajes
         return $this->belongsTo(Lenguaje::class);
     }
 }

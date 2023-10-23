@@ -80,43 +80,42 @@
     <div class="row">
         <div class="col-md-7">
             <div class="card">
-                <div class="card-body overflow-auto" style="min-height: 300px; max-height: 300px;">
+                <div class="card-body overflow-auto pl-1 py-0" style="min-height: 300px; max-height: 300px;">
                     {{-- algo de la busqueda --}}
                     @foreach ($fuentes as $fuente)
                     <!-- Este DIV d-flex, oficia de ITEM de fuente, por lo cual se puede repetir tantas veces como items haya -->
-                    <div class="form-row border-bottom py-2 detalle_fuente">
-                        <div class="align-self-center col-md-4 py-1">
-                            @if ($editing_id == $fuente->id)
-                            <input type="text" wire:model="nombre_fuente_upd" class="form-control">
-                            @else
-                            <span class="form-control bg-gradient-secondary text-center" title="Fuente">
-                                {{$fuente->nombre}}
-                            </span>
-                            @endif
-                        </div>
-
-                        <div class="align-self-center col-md-2 py-1">
+                    <div class="form-row border-bottom py-1 detalle_fuente">
+                        <div class="align-self-center text-center col-md-2 py-1">
                             @if ($editing_id == $fuente->id)
                                 <select class="form-control" id="lenguaje_fuente_upd" wire:model='lenguaje_fuente_upd'>
                                 @foreach ($lenguajes as $lenguaje)
-                                <option value="{{$lenguaje->id}}">{{$lenguaje->nombre}}</option>
+                                    <option value="{{$lenguaje->id}}">{{$lenguaje->nombre}}</option>
                                 @endforeach
                                 </select>
                             @else
-                                <div class="form-control text-center">
-                                    {{-- accedemos a la tabla relacionada a traves del doble método --}}
-                                    {{$fuente->lenguaje->nombre}}
-                                </div>
+                                {{-- accedemos a la tabla relacionada a traves del doble método --}}
+                                <img class="rounded" style="width: 70px; height: auto;" src="assets\img\ico_lenguajes\{{$fuente->lenguaje->imagen}}" title="{{$fuente->lenguaje->nombre}}">
                             @endif
                         </div>
+
+                        <div class="align-self-center col-md-3 py-1">
+                            @if ($editing_id == $fuente->id)
+                            <input type="text" wire:model="nombre_fuente_upd" class="form-control">
+                            @else
+                            <h6 class="d-inline-block mb-0">{{$fuente->nombre}}</h6>
+                            <small class="text-muted" title="{{$fuente->desarrollo}}">
+                                {Desarrollo del fuente}
+                            </small>
+                            @endif
+                        </div>
+
+                        
 
                         <div class="align-self-center col-md-5 py-1">
                             @if ($editing_id == $fuente->id)
                             <textarea class="form-control" rows="5" wire:model='desarrollo_fuente_upd'></textarea>
                             @else
-                            <div class="form-control overflow-auto">
-                                {{$fuente->desarrollo}}
-                            </div>
+                            {{-- Prueba de juntar componentes --}}
                             @endif
                         </div>
 

@@ -13,11 +13,12 @@ return new class extends Migration
     {
         Schema::create('credenciales', function (Blueprint $table) {
             $table->id();
-            $table->string('descripcion', 250);
             $table->string('user', 50);
             $table->string('password', 50);
             $table->bigInteger('categoria_id')->nullable();
+            $table->string('descripcion', 250);           
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

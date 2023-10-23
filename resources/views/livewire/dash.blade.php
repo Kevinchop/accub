@@ -57,11 +57,19 @@
             </div>
         </div>
     </div>
-	
-{{-- Esta es la parte de abajo donde está el listado de actividades --}}
+
+    {{-- Esta es la parte de abajo donde está el listado de actividades --}}
     <div class="card">
         <div class="card-header">
             <div class="row">
+                <div class="badge badge-info pt-2">
+                    <h6>({{$diastrabajados}}) dias trabajados</h6>
+                </div>
+
+                <div class="badge badge-secondary pt-2 ml-2">
+                    <h6>({{$horastrabajadas}}) horas trabajadas</h6>
+                </div>
+
                 <div class="col-md-4 ml-auto">
                     <input class="form-control" type="text" wire:model.live='consulta' placeholder="Buscar actividad">
                 </div>
@@ -85,7 +93,8 @@
                     @if ($editing_id == $actividad->id)
                     <input type="text" class="form-control" wire:model='idTarea_up'>
                     @else
-                    <div class="form-control text-center" title="ID de actividad" title="{{$actividad->prefijo . " ::: " . $actividad->id_sec}}">
+                    <div class="form-control text-center" title="ID de actividad" title="{{$actividad->prefijo . "
+                        ::: " . $actividad->id_sec}}">
                         {{$actividad->id_tarea}}
                     </div>
                     @endif

@@ -3,15 +3,10 @@
 @section('title', 'Glosario | Accubys')
 
 @section('content_header')
-{{-- CONTENIDO ESTÁTICO --}}
-<section>
-    <div class="row">
-        {{-- y aca se puede poner algo mas --}}
-    </div>
-</section>
+{{-- //acá está inserto el componente Livewire para el intercambio con ajax --}}
+@livewire('glos')
 @stop
 
 @section('content')
-{{-- //acá está inserto el componente Livewire para el intercambio con ajax --}}
-@livewire('glos')
+{{-- POR AHORA ACA NO VOY A PONER NADA --}}
 @endsection

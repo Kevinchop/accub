@@ -24,12 +24,17 @@ class Dash extends Component
     public $cantHs;
     public $concepto = 'Hs_Presenciales'; //A este le ponemos algo porque el <select> está en posicion de reposo sin cambios
 
+    // VARIABLES DE ACTUALIZACION
     public $editing_id = null;
     public $fecha_up;
     public $idTarea_up;
     public $nombre_up;
     public $cantHs_up;
     public $concepto_up;
+
+    // VARIABLES MISCELANEAS
+    public $horastrabajadas;
+    public $diastrabajados;
 
     public $consulta;
  
@@ -44,8 +49,9 @@ class Dash extends Component
     {
         /* En render van todos los elementos que quedan como en un estado de conexion continua con la vista. Es dinamico y 
         sirve al sistema como nexo de AJAX entre las funciones */
-        $this->actividades = ast_actividad::where('nombre', 'like', '%'. $this->consulta . '%')->orderBy('id', 'desc')->get();
-        // $this->actividades = ast_actividad::all();
+        $this->actividades = ast_actividad::where('nombre', 'like', '%'. $this->consulta . '%')->orderBy('id', 'desc')->limit(5)->get();
+        $this->horastrabajadas = ast_actividad::sum('horas');
+        $this->diastrabajados = ast_actividad::all()->groupby('fecha')->count();
         return view('livewire.dash');
     }
 

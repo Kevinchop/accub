@@ -62,12 +62,16 @@
     <div class="card">
         <div class="card-header">
             <div class="row">
-                <div class="badge badge-info pt-2">
+                <div class="badge badge-info pt-2 mr-2">
                     <h6>({{$diastrabajados}}) dias trabajados</h6>
                 </div>
 
-                <div class="badge badge-secondary pt-2 ml-2">
+                <div class="badge badge-secondary pt-2 mr-2">
                     <h6>({{$horastrabajadas}}) horas trabajadas</h6>
+                </div>
+
+                <div class="badge badge-secondary pt-2">
+                    <h6>({{$asts}}) ASTs</h6>
                 </div>
 
                 <div class="col-md-4 ml-auto">
@@ -103,9 +107,9 @@
                 <!-- Este texto tambien tiene que estar centrado en el item de la lista, por eso va con align-self-center tambien -->
                 <div class="align-self-center col-md-5 py-1">
                     @if ($editing_id == $actividad->id)
-                    <input type="text" class="form-control" wire:model='nombre_up'>
+                    <input id="nombre_editable" type="text" class="form-control" wire:model='nombre_up'>
                     @else
-                    <div class="form-control mr-3"> {{$actividad->nombre}} </div>
+                    <input id="nombre_a_mostrar" type="text" class="form-control" value="{{$actividad->nombre}}" disabled/>
                     @endif
                 </div>
 

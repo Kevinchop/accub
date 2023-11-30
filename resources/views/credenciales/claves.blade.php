@@ -4,10 +4,10 @@
 
 
 @section('content_header')
-@livewire('headclavel')
+@livewire('clavelario')
 @stop
 
 
 @section('content')
-@livewire('clavelario')
+
 @endsection

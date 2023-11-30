@@ -11,7 +11,7 @@
                         <i class="fas fa-file-code"></i>
                     </button>
                     <div class="form-inline">
-                        <label for="tipo_conversion" class="mr-2 text-light">({{$cantFuentes}}) Fuentes</label>
+                        <label for="tipo_conversion" class="mr-2 text-light">({{ $cantFuentes }}) Fuentes</label>
                         <div class="btn-group bootstrap-select ml-2 linea_botones_inf col-md-4">
                             <input type="text" class="form-control" wire:model.live='q_fuente'
                                 placeholder="Nombre o etiqueta..." />
@@ -33,8 +33,8 @@
                                         <input class="form-control" name="nombre_fuente" wire:model="nombre_fuente"
                                             type="text" placeholder="Ej.: SP validacion montos">
                                         @error('nombre_fuente')
-                                        {{-- cuando no es un componente x-adminlte, no hay que ponerle el @error() --}}
-                                        <small class="text-danger">{{ $message }}</small>
+                                            {{-- cuando no es un componente x-adminlte, no hay que ponerle el @error() --}}
+                                            <small class="text-danger">{{ $message }}</small>
                                         @enderror
                                     </div>
                                 </div>
@@ -44,7 +44,7 @@
                                         <select class="form-control" name="lenguaje_a_usar" id="lenguaje_a_usar"
                                             wire:model='lenguaje_a_usar'>
                                             @foreach ($lenguajes as $lenguaje)
-                                            <option value="{{$lenguaje->id}}">{{$lenguaje->nombre}}</option>
+                                                <option value="{{ $lenguaje->id }}">{{ $lenguaje->nombre }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -60,11 +60,11 @@
                             </div>
                             <div class="form-group">
                                 <label for="desarrollo_fuente">Descripcion</label>
-                                <textarea class="form-control" name="desarrollo_fuente" wire:model="desarrollo_fuente"
-                                    rows="4" placeholder="begin..."></textarea>
+                                <textarea class="form-control" name="desarrollo_fuente" wire:model="desarrollo_fuente" rows="4"
+                                    placeholder="begin..."></textarea>
                                 @error('desarrollo_fuente')
-                                {{-- cuando no es un componente x-adminlte, no hay que ponerle el @error() --}}
-                                <small class="text-danger">{{ $message }}</small>
+                                    {{-- cuando no es un componente x-adminlte, no hay que ponerle el @error() --}}
+                                    <small class="text-danger">{{ $message }}</small>
                                 @enderror
                             </div>
                             <div class="form-group d-flex mb-0">
@@ -81,62 +81,64 @@
         <div class="col-md-7">
             <div class="card">
                 <div class="card-body overflow-auto pl-1 py-0" style="min-height: 300px; max-height: 300px;">
-                    {{-- algo de la busqueda --}}
+
                     @foreach ($fuentes as $fuente)
-                    <!-- Este DIV d-flex, oficia de ITEM de fuente, por lo cual se puede repetir tantas veces como items haya -->
-                    <div class="form-row border-bottom py-1 detalle_fuente">
-                        <div class="align-self-center text-center col-md-2 py-1">
-                            @if ($editing_id == $fuente->id)
-                                <select class="form-control" id="lenguaje_fuente_upd" wire:model='lenguaje_fuente_upd'>
-                                @foreach ($lenguajes as $lenguaje)
-                                    <option value="{{$lenguaje->id}}">{{$lenguaje->nombre}}</option>
-                                @endforeach
-                                </select>
-                            @else
-                                {{-- accedemos a la tabla relacionada a traves del doble método --}}
-                                <img class="rounded" style="width: 70px; height: auto;" src="assets\img\ico_lenguajes\{{$fuente->lenguaje->imagen}}" title="{{$fuente->lenguaje->nombre}}">
-                            @endif
-                        </div>
+                        <!-- Este DIV d-flex, oficia de ITEM de fuente, por lo cual se puede repetir tantas veces como items haya -->
+                        <div class="form-row border-bottom detalle_fuente">
+                            {{-- icono y select del lenguaje --}}
+                            <div class="align-self-center text-center col-md-2 py-1">
+                                @if ($editing_id == $fuente->id)
+                                    <select class="form-control" id="lenguaje_fuente_upd"
+                                        wire:model='lenguaje_fuente_upd'>
+                                        @foreach ($lenguajes as $lenguaje)
+                                            <option value="{{ $lenguaje->id }}">{{ $lenguaje->nombre }}</option>
+                                        @endforeach
+                                    </select>
+                                @else
+                                    {{-- accedemos a la tabla relacionada a traves del doble método --}}
+                                    <img class="rounded" style="width: 70px; height: auto;"
+                                        src="assets\img\ico_lenguajes\{{ $fuente->lenguaje->imagen }}"
+                                        title="{{ $fuente->lenguaje->nombre }}">
+                                @endif
+                            </div>
+                            {{-- Input con nombre del fuente guardado --}}
+                            <div class="align-self-center col-md-3 py-1">
+                                @if ($editing_id == $fuente->id)
+                                    <input type="text" wire:model="nombre_fuente_upd" class="form-control">
+                                @else
+                                    <h6 class="d-inline-block mb-0">{{ $fuente->nombre }}</h6>
+                                    <small class="text-muted" title="{{ $fuente->desarrollo }}">
+                                        {Desarrollo del fuente}
+                                    </small>
+                                @endif
+                            </div>
+                            {{-- El text area para los fuentes o nada si no está en modo edicion --}}
+                            <div class="align-self-center col-md-5 py-1">
+                                @if ($editing_id == $fuente->id)
+                                    <textarea class="form-control" rows="5" wire:model='desarrollo_fuente_upd'></textarea>
+                                @else
+                                    {{-- Prueba de juntar componentes --}}
+                                @endif
+                            </div>
 
-                        <div class="align-self-center col-md-3 py-1">
-                            @if ($editing_id == $fuente->id)
-                            <input type="text" wire:model="nombre_fuente_upd" class="form-control">
-                            @else
-                            <h6 class="d-inline-block mb-0">{{$fuente->nombre}}</h6>
-                            <small class="text-muted" title="{{$fuente->desarrollo}}">
-                                {Desarrollo del fuente}
-                            </small>
-                            @endif
+                            {{-- Si ponemos como ml-auto al que esta a la izquierda, empuja a todos los otros contra el borde dserecho --}}
+                            <div class="align-self-center ml-auto py-1">
+                                @if ($editing_id == $fuente->id)
+                                    <button wire:click="update({{ $fuente->id }})"
+                                        class="btn btn-success btn-sm mr-1">
+                                        <i class="fa fa-check"></i>
+                                    </button>
+                                    <button wire:click="editClose()" class="btn btn-danger btn-sm">
+                                        <i class="fa fa-times"></i>
+                                    </button>
+                                @else
+                                    <button wire:click="editing({{ $fuente->id }})"
+                                        class="btn btn-primary btn-sm mr-1">
+                                        <i class="fa fa-edit"></i>
+                                    </button>
+                                @endif
+                            </div>
                         </div>
-
-                        
-
-                        <div class="align-self-center col-md-5 py-1">
-                            @if ($editing_id == $fuente->id)
-                            <textarea class="form-control" rows="5" wire:model='desarrollo_fuente_upd'></textarea>
-                            @else
-                            {{-- Prueba de juntar componentes --}}
-                            @endif
-                        </div>
-
-                        {{-- // Si ponemos como ml-auto al que esta a la izquierda, empuja a todos los otros contra el
-                        borde
-                        derecho --}}
-                        <div class="align-self-center ml-auto py-1">
-                            @if ($editing_id == $fuente->id)
-                            <button wire:click="update({{ $fuente->id }})" class="btn btn-success btn-sm mr-1">
-                                <i class="fa fa-check"></i>
-                            </button>
-                            <button wire:click="editClose()" class="btn btn-danger btn-sm">
-                                <i class="fa fa-times"></i>
-                            </button>
-                            @else
-                            <button wire:click="editing({{ $fuente->id }})" class="btn btn-primary btn-sm mr-1">
-                                <i class="fa fa-edit"></i>
-                            </button>
-                            @endif
-                        </div>
-                    </div>
                     @endforeach
                 </div>
             </div>

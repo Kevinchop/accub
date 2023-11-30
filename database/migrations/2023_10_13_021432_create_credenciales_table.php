@@ -15,8 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('user', 50);
             $table->string('password', 50);
-            $table->bigInteger('categoria_id')->nullable();
-            $table->string('descripcion', 250);           
+            $table->bigInteger('categoria_id')->default(1);
+            $table->bigInteger('institucion_id')->default(1);
+            $table->string('descripcion', 250);
+            $table->string('tipo', 1)->default('u');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -39,8 +39,6 @@ class CentralFuente extends Component
     public $q_fuente; //Simboliza el campo donde escribo lo que se usará para la búsqueda.
 
 
-    
-
 
     public function mount()
     {
@@ -49,9 +47,9 @@ class CentralFuente extends Component
 
     public function render()
     {
-        $this->lenguajes = Lenguaje::all();
+        $this->lenguajes = Lenguaje::orderby('nombre', 'asc')->get();
         $this->cantFuentes = Fuente::count();
-        //Esta consulta ya va completa y como las tabla estan relacionadas a traves de BelongsTo() en App\Models\Fuente.php 
+        //Esta consulta ya va completa y como las tabla estan relacionadas a traves de BelongsTo() en App\Models\Fuente.php
         $this->fuentes = Fuente::where('nombre', 'like', '%' . $this->q_fuente . '%')->get();
 
         return view('livewire.central-fuente');

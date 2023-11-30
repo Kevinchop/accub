@@ -35,9 +35,10 @@ class Dash extends Component
     // VARIABLES MISCELANEAS
     public $horastrabajadas;
     public $diastrabajados;
+    public $asts;
 
     public $consulta;
- 
+
 
     public function mount()
     {
@@ -47,11 +48,15 @@ class Dash extends Component
 
     public function render()
     {
-        /* En render van todos los elementos que quedan como en un estado de conexion continua con la vista. Es dinamico y 
+        /* En render van todos los elementos que quedan como en un estado de conexion continua con la vista. Es dinamico y
         sirve al sistema como nexo de AJAX entre las funciones */
-        $this->actividades = ast_actividad::where('nombre', 'like', '%'. $this->consulta . '%')->orderBy('id', 'desc')->limit(5)->get();
-        $this->horastrabajadas = ast_actividad::sum('horas');
-        $this->diastrabajados = ast_actividad::all()->groupby('fecha')->count();
+        $this->actividades = ast_actividad::where('nombre', 'like', '%'. $this->consulta . '%')->orderBy('id', 'desc')->limit(10)->get();
+        //Cantidad de horas trabajadas segun la busqueda (si no se ingresa nada, devuelve todos los registros)
+        $this->horastrabajadas = ast_actividad::where('nombre', 'like', '%'. $this->consulta . '%')->sum('horas');
+        //Divido las horas encontradas por 8 y de esas forma saco la cantidad de dias
+        $this->diastrabajados = round($this->horastrabajadas/8);
+        //Cuento la cantidad de ASTs distintas en las que he participado
+        $this->asts = ast_actividad::where('nombre', 'like', '%'. $this->consulta . '%')->distinct('id_tarea')->count('id_tarea');
         return view('livewire.dash');
     }
 

@@ -22,4 +22,9 @@ class Credenciale extends Model
     {
         return $this->belongsTo(Categoria::class);
     }
+
+    public function institucion()
+    {
+        return $this->belongsTo(Institucione::class);
+    }
 }

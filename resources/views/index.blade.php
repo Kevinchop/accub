@@ -10,9 +10,9 @@
 <li class="nav-item">
     <a class="nav-link" href="{{ route ('login') }}">Iniciar Sesion</a>
 </li>
-<li class="nav-item">
+{{-- <li class="nav-item">
     <a class="nav-link" href="{{ route ('register') }}">Registrarse</a>
-</li>
+</li> --}}
 @endsection
 
 @section('hero')

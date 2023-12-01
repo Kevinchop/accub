@@ -135,12 +135,45 @@
                     @foreach ($credenciales as $credencial)
                         <li class="list-group-item list-group-item-action">
                             <div class="row">
-                                <span class="mr-2">
-                                    <img class="rounded" style="width: 40px; height: auto;" src="assets/img/ico_aplicaciones/{{ $credencial->categoria->imagen }}" title="{{ $credencial->categoria->nombre }}">
-                                </span>
-                                <div class="ml-2">
-                                    <h6 class="py-0 my-0 text-dark font-bold">{{ $credencial->institucion->nombre }}</h6>
-                                    <small class="text-muted">{{ $credencial->user . " | " . $credencial->password }}</small>
+                                @if ($editing_id == $credencial->id)
+                                    <div class="col-md-3 mr-2">
+                                        <select class="form-control" wire:model='categoria_upd'>
+                                            @foreach ($categorias as $categoria)
+                                                <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="text" class="form-control" wire:model='user_upd'>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="text" class="form-control ml-2" wire:model='pass_upd'>
+                                    </div>
+                                @else
+                                    <span class="mr-2">
+                                        <img class="rounded" style="width: 40px; height: auto;" src="assets/img/ico_aplicaciones/{{ $credencial->categoria->imagen }}" title="{{ $credencial->categoria->nombre }}">
+                                    </span>
+                                    <div class="ml-2">
+                                        <h6 class="py-0 my-0 text-dark font-bold">{{ $credencial->institucion->nombre }}</h6>
+                                        <small class="text-muted">{{ $credencial->user . " | " . $credencial->password }}</small>
+                                    </div>
+                                @endif
+                                {{-- Si ponemos como ml-auto al que esta a la izquierda, empuja a todos los otros contra el borde dserecho --}}
+                                <div class="align-self-center ml-auto py-1">
+                                    @if ($editing_id == $credencial->id)
+                                        <button wire:click="update({{ $credencial->id }})"
+                                            class="btn btn-success btn-sm mr-1">
+                                            <i class="fa fa-check"></i>
+                                        </button>
+                                        <button wire:click="editClose()" class="btn btn-danger btn-sm">
+                                            <i class="fa fa-times"></i>
+                                        </button>
+                                    @else
+                                        <button wire:click="editing({{ $credencial->id }})"
+                                            class="btn btn-primary btn-sm mr-1">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                    @endif
                                 </div>
                             </div>
                         </li>

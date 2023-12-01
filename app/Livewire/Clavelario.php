@@ -24,6 +24,7 @@ class Clavelario extends Component
     public $tipo = 'u'; //tiene un default en la base de datos/migration pero no me lo guarda, y le pone error si le saco el null
 
     //variables del UPDATE
+    public $editing_id = null;
     public $user_upd;
     public $pass_upd;
     public $categoria_upd; //tiene un default en la base de datos/migration
@@ -118,5 +119,35 @@ class Clavelario extends Component
         $this->categoria_tabla = "";
     }
 
+    public function editing(Credenciale $credencial)
+    {
+        //$credencial es una collection (array de objetos), cada registro es un objeto
+        $this->editing_id = $credencial->id;
+        $this->categoria_upd = $credencial->categoria_id;
+        $this->user_upd = $credencial->user;
+        $this->pass_upd = $credencial->password;
+        $this->tipo_upd = $credencial->tipo;
+    }
+
+    public function update(Credenciale $credencial)
+    {
+        $credencial->update([
+            'categoria_id' => $this->categoria_upd,
+            'user' => $this->user_upd,
+            'password' => $this->pass_upd
+        ]);
+
+        //en cao de que la clave sea del servidor radius de Accusys (compartida), modifico en todas las compartidas
+        if($this->tipo_upd == 's'){
+            Credenciale::where('tipo', 's')->update(['password' => $this->pass_upd]);
+        }
+
+        $this->editClose();
+    }
+
+    public function editClose()
+    {
+        $this->editing_id = null;
+    }
 
 }

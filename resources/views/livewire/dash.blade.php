@@ -70,7 +70,7 @@
                     <h6>({{$horastrabajadas}}) horas trabajadas</h6>
                 </div>
 
-                <div class="badge badge-secondary pt-2">
+                <div class="badge badge-warning pt-2">
                     <h6>({{$asts}}) ASTs</h6>
                 </div>
 

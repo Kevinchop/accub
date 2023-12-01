@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 27-11-2023 a las 14:38:46
+-- Tiempo de generación: 01-12-2023 a las 19:45:24
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -95,13 +95,23 @@ INSERT INTO `ast_actividads` (`id`, `sprint_id`, `fecha`, `prefijo`, `id_tarea`,
 (46, NULL, '2023-11-13', 'AST', '103549', '1 - 1', 'BH - Cotizacion Desarrollo funcionalidad de informe de Mora y datos generales de Cajas de Seguridad', 8, 'Hs_Presenciales', '2023-11-15 14:39:19', '2023-11-15 14:39:19', NULL),
 (47, NULL, '2023-11-14', 'AST', '103549', '1 - 1', 'BH - Cotizacion Desarrollo funcionalidad de informe de Mora y datos generales de Cajas de Seguridad', 6, 'Hs_Trabajo Remoto', '2023-11-15 14:39:44', '2023-11-15 14:39:44', NULL),
 (48, NULL, '2023-11-14', 'AST', '101652', '1 - 1', 'Capacitacion - CEN', 2, 'Hs_Trabajo Remoto', '2023-11-15 14:40:04', '2023-11-15 14:40:04', NULL),
-(49, NULL, '2023-11-15', 'AST', '103549', '1 - 1', 'BH - Cotizacion Desarrollo funcionalidad de informe de Mora y datos generales de Cajas de Seguridad (excedido)', 8, 'Hs_Presenciales', '2023-11-19 04:31:25', '2023-11-23 15:33:44', NULL),
-(50, NULL, '2023-11-16', 'AST', '103549', '1 - 1', 'BH - Cotizacion Desarrollo funcionalidad de informe de Mora y datos generales de Cajas de Seguridad (excedido)', 6, 'Hs_Trabajo Remoto', '2023-11-19 04:31:47', '2023-11-23 15:33:32', NULL),
+(49, NULL, '2023-11-15', 'AST', '103549', '1 - 1', 'BH - Cotizacion Desarrollo funcionalidad de informe de Mora y datos generales de Cajas de Seguridad', 8, 'Hs_Presenciales', '2023-11-19 04:31:25', '2023-11-30 17:36:20', NULL),
+(50, NULL, '2023-11-16', 'AST', '101299', '1 - 1', 'BCBA - Proyecto Migración Jubilaciones a Cobis - Interfases a generar por Adelantos', 6, 'Hs_Trabajo Remoto', '2023-11-19 04:31:47', '2023-11-30 17:49:51', NULL),
 (51, NULL, '2023-11-16', 'AST', '101652', '1 - 1', 'Capacitacion - CEN', 2, 'Hs_Trabajo Remoto', '2023-11-19 04:32:10', '2023-11-19 04:32:10', NULL),
-(52, NULL, '2023-11-17', 'AST', '103549', '1 - 1', 'BH - Cotizacion Desarrollo funcionalidad de informe de Mora y datos generales de Cajas de Seguridad (excedido)', 8, 'Hs_Trabajo Remoto', '2023-11-19 04:33:02', '2023-11-23 15:33:12', NULL),
-(53, NULL, '2023-11-21', 'AST', '103549', '1 - 1', 'BH - Cotizacion Desarrollo funcionalidad de informe de Mora y datos generales de Cajas de Seguridad (excedido)', 6, 'Hs_Trabajo Remoto', '2023-11-21 23:06:58', '2023-11-23 15:32:44', NULL),
+(52, NULL, '2023-11-17', 'AST', '101299', '1 - 1', 'BCBA - Proyecto Migración Jubilaciones a Cobis - Interfases a generar por Adelantos', 8, 'Hs_Trabajo Remoto', '2023-11-19 04:33:02', '2023-11-30 17:50:39', NULL),
+(53, NULL, '2023-11-20', 'AST', '101299', '1 - 1', 'BCBA - Proyecto Migración Jubilaciones a Cobis - Interfases a generar por Adelantos', 8, 'Hs_Presenciales', '2023-11-21 23:06:58', '2023-11-30 17:52:21', NULL),
 (54, NULL, '2023-11-21', 'AST', '101652', '1 - 1', 'Capacitacion - CEN', 2, 'Hs_Trabajo Remoto', '2023-11-21 23:07:11', '2023-11-21 23:07:11', NULL),
-(55, NULL, '2023-11-22', 'AST', '103549', '1 - 1', 'BH - Cotizacion Desarrollo funcionalidad de informe de Mora y datos generales de Cajas de Seguridad (excedido)', 8, 'Hs_Presenciales', '2023-11-23 15:31:24', '2023-11-23 15:31:24', NULL);
+(55, NULL, '2023-11-21', 'AST', '101299', '1 - 1', 'BCBA - Proyecto Migración Jubilaciones a Cobis - Interfases a generar por Adelantos', 6, 'Hs_Trabajo Remoto', '2023-11-23 15:31:24', '2023-11-30 17:53:17', NULL),
+(56, NULL, '2023-11-22', 'AST', '101299', '1 - 1', 'BCBA - Proyecto Migración Jubilaciones a Cobis - Interfases a generar por Adelantos', 4, 'Hs_Presenciales', '2023-11-30 17:58:01', '2023-11-30 17:58:01', NULL),
+(57, NULL, '2023-11-22', 'AST', '103806', '1 - 1', 'BCBA_PROYECTO JUBILACIONES_FALLECIDOS_RECLAMOS MAN -IMPAGOS E INTERFAZ EMERIX', 4, 'Hs_Presenciales', '2023-11-30 17:58:33', '2023-11-30 17:58:33', NULL),
+(58, NULL, '2023-11-23', 'AST', '103806', '1 - 1', 'BCBA_PROYECTO JUBILACIONES_FALLECIDOS_RECLAMOS MAN -IMPAGOS E INTERFAZ EMERIX', 6, 'Hs_Trabajo Remoto', '2023-11-30 18:02:35', '2023-11-30 18:02:35', NULL),
+(59, NULL, '2023-11-23', 'AST', '101652', '1 - 1', 'Capacitacion - CEN', 2, 'Hs_Trabajo Remoto', '2023-11-30 18:03:17', '2023-11-30 18:03:17', NULL),
+(60, NULL, '2023-11-24', 'AST', '103806', '1 - 1', 'BCBA_PROYECTO JUBILACIONES_FALLECIDOS_RECLAMOS MAN -IMPAGOS E INTERFAZ EMERIX', 6, 'Hs_Trabajo Remoto', '2023-11-30 18:04:05', '2023-11-30 18:04:05', NULL),
+(61, NULL, '2023-11-24', 'AST', '101299', '1 - 1', 'BCBA - Proyecto Migración Jubilaciones a Cobis - Interfases a generar por Adelantos', 2, 'Hs_Trabajo Remoto', '2023-11-30 18:04:34', '2023-11-30 18:04:34', NULL),
+(62, NULL, '2023-11-27', 'AST', '104040', '1 - 1', 'BH - ADAPTACIONES PARA EL FUNCIONAMIENTO DEL TRANSACTION LOG - BCRA-DGI', 8, 'Hs_Presenciales', '2023-11-30 18:29:25', '2023-11-30 18:29:25', NULL),
+(63, NULL, '2023-11-28', 'AST', '104040', '1 - 1', 'BH - ADAPTACIONES PARA EL FUNCIONAMIENTO DEL TRANSACTION LOG - BCRA-DGI', 6, 'Hs_Trabajo Remoto', '2023-11-30 18:30:39', '2023-11-30 18:30:39', NULL),
+(64, NULL, '2023-11-28', 'AST', '101652', '1 - 1', 'Capacitacion - CEN', 2, 'Hs_Trabajo Remoto', '2023-11-30 18:31:45', '2023-11-30 18:31:45', NULL),
+(65, NULL, '2023-11-29', 'AST', '104040', '1 - 1', 'BH - ADAPTACIONES PARA EL FUNCIONAMIENTO DEL TRANSACTION LOG - BCRA-DGI', 8, 'Hs_Presenciales', '2023-11-30 18:32:22', '2023-11-30 18:32:22', NULL);
 
 -- --------------------------------------------------------
 
@@ -147,7 +157,8 @@ INSERT INTO `categorias` (`id`, `nombre`, `imagen`, `created_at`, `updated_at`) 
 (7, 'AST - Activities Manager', 'categoria_generica.svg', '2023-10-27 16:53:36', '2023-10-27 16:53:36'),
 (8, 'GLPI', 'glpi.svg', '2023-10-30 17:50:03', '2023-10-30 17:50:03'),
 (9, 'Plataforma Educativa', 'plataforma_educativa.svg', '2023-10-30 17:56:27', '2023-10-30 17:56:27'),
-(10, 'E-Mail Corporativo', 'mail.svg', '2023-10-30 20:25:42', '2023-10-30 20:25:42');
+(10, 'E-Mail Corporativo', 'mail.svg', '2023-10-30 20:25:42', '2023-10-30 20:25:42'),
+(11, 'Citrix (Escritorio Remoto)', 'categoria_generica.svg', '2023-11-27 17:05:50', '2023-11-27 17:05:50');
 
 -- --------------------------------------------------------
 
@@ -183,7 +194,9 @@ INSERT INTO `credenciales` (`id`, `user`, `password`, `categoria_id`, `instituci
 (8, 'exequiel.polito', 'Cyber2884', 9, 1, 'https://accusys.ejecutiva.com/portal/portal-general/', 'u', '2023-10-30 17:56:55', '2023-10-30 17:56:55', NULL),
 (9, 'exequiel.polito@accusys.com.ar', 'EP-4ccu2023', 10, 1, 'https://outlook.office.com/mail/', 's', '2023-10-30 20:26:52', '2023-10-30 20:26:52', NULL),
 (10, 'exequiel.polito', 'EP-4ccu2023', 1, 5, 'VWKS-TL246CEN64', 's', '2023-11-09 16:28:35', '2023-11-09 16:28:35', NULL),
-(11, 'exequiel.polito@accusys.com.ar', 'EP-4ccu202', 5, 1, 'Programa por el que salgo a internet', 's', '2023-11-27 14:59:17', '2023-11-27 14:59:17', NULL);
+(11, 'exequiel.polito@accusys.com.ar', 'EP-4ccu202', 5, 1, 'Programa por el que salgo a internet', 's', '2023-11-27 14:59:17', '2023-11-27 14:59:17', NULL),
+(12, 'C04209', 'LGHcm4O6', 11, 2, 'https://vdi.hipotecario.com.ar/vpn/index.html [Sistema: AD]', 'u', '2023-11-27 17:07:10', '2023-11-27 17:07:10', NULL),
+(13, 'C06461', 'Hfiy89q2', 11, 2, 'https://vdi.hipotecario.com.ar/vpn/index.html', 'u', '2023-12-01 17:32:12', '2023-12-01 17:32:12', NULL);
 
 -- --------------------------------------------------------
 
@@ -463,15 +476,16 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('3UnI04esJp67nZZrp6pwrhAc6nGq7RMBJOJNJddR', NULL, '106.75.136.140', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiMVlkbXV4YjFnQXU4ZTFUemlmdWJ3YTVjM2FUa2Z6THJCbWgxWWd4diI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjY6Imh0dHA6Ly8xODEuODkuMTQzLjIzNzo4MDgwIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1701088213),
-('4KNiHGYTMy60Jgt8bTRVYh2vwwmbJ8nQM0T74yo5', NULL, '192.168.5.19', 'HomeNet/1.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiVlRDQlhZczFQUkJvaVd1bkFGeExBY1pBbElsQXI1UzRLTkNPeDQ3SCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MTk6Imh0dHA6Ly8xOTIuMTY4LjUuMTkiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1701082760),
-('aO1jvlzqUAVhM0C04VrOQdW7hrd8NpNBoPKrKt94', NULL, '152.168.242.135', '', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoid3BZbmh1WXFacVVSTXpkQThTWkZmRDlrWkNxc0pjbjhyZXdBSkdCQiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly9zZXJ2aWRvci5sb2NhbCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1701091338),
-('emUvTuoJyzK5ZMd0WPAkMEKt8v7amr6O0irloZ6C', NULL, '152.168.242.135', '', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiZ1I1NlBhSndxbk42MXY5dEFIbVV5UFdNaUhIdWNleUxkbWNYbHFMMCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly9zZXJ2aWRvci5sb2NhbCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1701091336),
-('EsCgaeNen07qFHmVYB7zZDbYLhDLasqNFdohBsjz', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/119.0', 'YTo2OntzOjY6Il90b2tlbiI7czo0MDoiRnV2eDBsdjFYeTFTUWJjUWRJR1VoRWhzeEZDMDBKTFZBTXhadHpIZiI7czozOiJ1cmwiO2E6MDp7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjM3OiJodHRwOi8vc2Vydmlkb3IubG9jYWwvYmRjb25vY2ltaWVudG9zIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTtzOjIxOiJwYXNzd29yZF9oYXNoX3NhbmN0dW0iO3M6NjA6IiQyeSQxMCQ5ZEpudi53STEyVjNGTmlZTkxtUFZ1YjYwNVQ1bHVIRE1ORzZyaGFiQ0t2b2s1RU9vSC9QdSI7fQ==', 1701092311),
-('OHyuNtbgjVgZLTQXVh7rSZXFgVJFFe8teLn2W0p0', NULL, '192.168.5.238', 'HomeNet/1.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiOWZ0c2R2UFo1Rk5WN2hNZzFqR0JNSUgyNWVOeW1McGtMWTlvWEtvdiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MTk6Imh0dHA6Ly8xOTIuMTY4LjUuMTkiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1701082626),
-('Res2srFVrVs7o8z3IGOUjAPhIKqXCILuY98M1I6w', NULL, '192.168.5.238', 'HomeNet/1.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiVXp1dUpXWG9ydHlkejI5SjFDbktadHZOQmFETE9qNjBhSnJhc2h6eiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MTk6Imh0dHA6Ly8xOTIuMTY4LjUuMTkiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1701091818),
-('THJuNrGVypYDM4ABVOFwXv3HNXNnBr4qb7cDKfwg', NULL, '152.168.242.135', 'Mozilla/5.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiT2g1Zk9VUGJrUG1GQWNoZXo1T2hwYlhqSnpEdVdPRG1nMUZtR0d5cCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDA6Imh0dHA6Ly9ob3N0MjM3LjE4MS04OS0xNDMudGVsZWNvbS5uZXQuYXIiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1701091336),
-('VAjVjVazitf1oH6qzY8I0ajPF5XqFqrYSW9pIDCX', NULL, '106.75.22.189', '', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiOHY3Vjd4VUV2YUJGMzFPc1p2N1VzWlpFbG00OE1FU2pJcEE5eDBpZiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjY6Imh0dHA6Ly8xODEuODkuMTQzLjIzNzo4MDgwIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1701087641);
+('25whXsoV1RqyD5528LbSodRtYlVKsMVGEvoWHb96', NULL, '157.230.105.158', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.115 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiSW01cUNQdGlOaWFFR3dua1lQdGFxOUNobml0cVkzZ2dQRFNwYzhiUSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDc6Imh0dHA6Ly91cGxvLmFkLz9pcD0xODEuODkuMTQzLjIzNyZwb3J0PTgwODAmdj0xIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1701436990),
+('3THic9kTFqPqbCvX2q7DjPVcbNFkvMINbh5xGiGR', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:120.0) Gecko/20100101 Firefox/120.0', 'YTo2OntzOjY6Il90b2tlbiI7czo0MDoiWUYyYldDV2xjSEZzdk9pWExWNFV6V2pZTUswMEh4ejZXWGpVU0ZYTSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czozOiJ1cmwiO2E6MDp7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjI4OiJodHRwOi8vc2Vydmlkb3IubG9jYWwvY2xhdmVzIjt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTtzOjIxOiJwYXNzd29yZF9oYXNoX3NhbmN0dW0iO3M6NjA6IiQyeSQxMCQ5ZEpudi53STEyVjNGTmlZTkxtUFZ1YjYwNVQ1bHVIRE1ORzZyaGFiQ0t2b2s1RU9vSC9QdSI7fQ==', 1701452785),
+('6bVfhmMIahfBCJckXcGgDjHQ5OqOVyRavgQ9iUGg', NULL, '192.168.5.238', 'HomeNet/1.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoib1hFRFZHcElaWlBwbXlOQ0ZzZDNkNjhnRnZkRExkOTc1Y1o2dUlubSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MTk6Imh0dHA6Ly8xOTIuMTY4LjUuMTkiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1701443624),
+('6LFawhxDRcrxpKcVy3wzOQHbOEzHBladhbhT0OUE', NULL, '192.168.5.238', 'HomeNet/1.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiSkJaNDV5TkliZ3RRZFVXS3BLNTREV0IyREhEeEUwcHNKSG5uNHd6TCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MTk6Imh0dHA6Ly8xOTIuMTY4LjUuMTkiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1701436365),
+('cfwjtXG0296Jh4yGAK5ZW1FYHBOkuift7lsva53H', NULL, '192.168.5.238', 'HomeNet/1.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoib1BkS29FM3hEYnp0RHZ6RkFTaXhZalZiaGxqdDZnbkc2blNXUjhTUyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MTk6Imh0dHA6Ly8xOTIuMTY4LjUuMTkiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1701454511),
+('J5cHvi3DBWMYQNKOX7x2YIFaiOKZPlOnSaPNY37h', NULL, '162.142.125.223', '', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoianJ6QU9CdDVadVYza2FKUElyaExtdHNVdWJtWENyUmgwMjA1MGxJNyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjY6Imh0dHA6Ly8xODEuODkuMTQzLjIzNzo4MDgwIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1701440142),
+('JTMULOSFNrQumZ6HqSr5UpchspZ5NRB0YwzyFRrh', NULL, '192.168.5.238', 'HomeNet/1.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiVHQ3RUxKYjIzMTBHdG90S09DV1BsR3hZZzZBWWVmRmtCWXlPSWFsVSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MTk6Imh0dHA6Ly8xOTIuMTY4LjUuMTkiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1701447245),
+('t16o8kqcA2fF3LDf97xn6vi7kf1AEf3gdhRqRp9s', NULL, '192.168.5.238', 'HomeNet/1.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoidzR1T094eDRSRVA5UFBzWWJkWEtLaEo1UHRvZlI4aGZuejB3R0NZdCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MTk6Imh0dHA6Ly8xOTIuMTY4LjUuMTkiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1701450875),
+('wWyA037G72uj1f5GY1PFTThtlW9MIkd4A2BfCXS3', NULL, '192.168.5.238', 'HomeNet/1.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiODRnb2ZUeHNvQ0FkR09rc1liM1Z4TUZhdGR5VHJucnpVbk1KdXhDZSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MTk6Imh0dHA6Ly8xOTIuMTY4LjUuMTkiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1701440000),
+('Y5ExD79E3O97X9wbtR7yloR4nNxisJGZH6QRDbJY', NULL, '162.142.125.223', 'Mozilla/5.0 (compatible; CensysInspect/1.1; +https://about.censys.io/)', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiNTVkb3pqdFNkbHFkUGNOcTQyZnhFcm5UWkVvcUx6d3ZjUUdCNHlSNyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjY6Imh0dHA6Ly8xODEuODkuMTQzLjIzNzo4MDgwIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1701440146);
 
 -- --------------------------------------------------------
 
@@ -611,7 +625,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de la tabla `ast_actividads`
 --
 ALTER TABLE `ast_actividads`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
 
 --
 -- AUTO_INCREMENT de la tabla `ast_sprints`
@@ -623,13 +637,13 @@ ALTER TABLE `ast_sprints`
 -- AUTO_INCREMENT de la tabla `categorias`
 --
 ALTER TABLE `categorias`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `credenciales`
 --
 ALTER TABLE `credenciales`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `failed_jobs`

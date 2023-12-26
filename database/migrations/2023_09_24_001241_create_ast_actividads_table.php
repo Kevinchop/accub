@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('nombre', 100)->nullable();
             $table->integer('horas')->nullable();
             $table->string('concepto', 20); //Hs Trabajo Remoto | Hs Calendario
+            $table->bigInteger('user_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

@@ -1,0 +1,8 @@
+Preguntas a Facu
+
+1) Como pueden conectarse los eventos de distintos componentes en tiempo real?
+2) Como exportar en PDF?
+3) Como invoco los datos de una sesion?
+4) como conectar un click con un modal?
+5) Como puedo inyectar Javascript? LaravelMix? push? y vincularlos con un archivo PHP para una eventual busqueda?
+6) 

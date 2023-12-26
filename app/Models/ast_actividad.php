@@ -12,7 +12,7 @@ class ast_actividad extends Model
     protected $guarded = [
         'id'
     ];
-    
+
     //Esta es la otra opcion. En esta podemos discriminar solo los campos que se pueden editar
     // protected $fillable = [
     //     'fecha',
@@ -21,4 +21,9 @@ class ast_actividad extends Model
 
     use HasFactory;
     use SoftDeletes; //esto me paso Facu para tener un campo de borrado y que no se pieda el registro
+
+    public function usuario()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
